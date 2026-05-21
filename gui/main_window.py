@@ -155,7 +155,6 @@ class MorphingOrb(QWidget):
         )
 
 
-
 class JarvisWindow(QWidget):
 
     def __init__(self):
@@ -171,6 +170,16 @@ class JarvisWindow(QWidget):
         self.orb = MorphingOrb()
 
         self.orb.setParent(self)
+
+        # ✅ FIX: make orb fill full window so center is correct
+        self.orb.setGeometry(0, 0, 700, 700)
+
+    def resizeEvent(self, event):
+
+        # ✅ keeps orb centered on resize
+        self.orb.setGeometry(self.rect())
+
+        super().resizeEvent(event)
 
 
 
