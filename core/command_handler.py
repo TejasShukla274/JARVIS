@@ -15,6 +15,7 @@ from music.spotify_controller import (
 
 from services.weather_service import get_weather
 from services.news_services import search_news
+from services.map_service import open_map
 
 from commands.apps import *
 
@@ -34,6 +35,27 @@ def process_command(user_text):
     if close_response:
 
         return close_response
+
+    # ==================================================
+    # MAPS
+    # ==================================================
+
+    map_triggers = [
+        "show map of",
+        "open map of",
+        "map of",
+        "show me map of",
+        "where is",
+        "locate"
+    ]
+
+    for trigger in map_triggers:
+
+        if trigger in user_text:
+
+            place = user_text.split(trigger, 1)[-1].strip()
+
+            return open_map(place)
 
     # ==================================================
     # OPEN WEBSITES

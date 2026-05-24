@@ -1,0 +1,20 @@
+{
+    "delhi": {
+        "query": "delhi",
+        "displayName": "New Delhi, Delhi, India",
+        "lat": 28.6138954,
+        "lon": 77.2090057
+    },
+    "london": {
+        "query": "london",
+        "displayName": "Greater London, England, United Kingdom",
+        "lat": 51.5074456,
+        "lon": -0.1277653
+    },
+    "manchester": {
+        "query": "manchester",
+        "displayName": "Manchester, Greater Manchester, England, United Kingdom",
+        "lat": 53.4424618,
+        "lon": -2.2324547
+    }
+}

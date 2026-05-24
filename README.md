@@ -39,6 +39,7 @@ Built using Python, AI modules, computer vision, voice recognition, automation, 
 
 * Weather updates
 * News updates
+* React Leaflet maps with cached place search
 * Spotify integration
 * App launching & automation
 
@@ -132,9 +133,25 @@ python main.py
 ✅ AI conversations
 ✅ Object detection
 ✅ Smart memory
+✅ Cached maps for places
 ✅ App automation
 ✅ Music integration
 ✅ Weather services
+
+---
+
+# Maps
+
+Ask JARVIS for a map with commands like:
+
+```bash
+jarvis show map of Delhi
+jarvis where is Japan
+jarvis locate Ayodhya
+```
+
+JARVIS opens a local React Leaflet map at `http://127.0.0.1:8765`.
+Place searches are cached in `memory/map_cache.json`, and repeat searches are loaded from cache instead of calling the geocoding service again.
 
 ---
 
