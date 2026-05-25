@@ -15,7 +15,7 @@ from music.spotify_controller import (
 
 from services.weather_service import get_weather
 from services.news_services import search_news
-from services.map_service import open_map
+from services.map_service import open_map, open_route, zoom_map
 
 from commands.apps import *
 
@@ -37,6 +37,56 @@ def process_command(user_text):
         return close_response
 
     # ==================================================
+    # MAP ZOOM
+    # ==================================================
+
+    if "zoom in" in user_text:
+
+        return zoom_map("in")
+
+    if "zoom out" in user_text:
+
+        return zoom_map("out")
+
+    # ==================================================
+    # MAP MODE
+    # ==================================================
+
+    map_mode = "2d"
+
+    if "4d" in user_text:
+
+        map_mode = "4d"
+
+    elif "3d" in user_text:
+
+        map_mode = "3d"
+
+    # ==================================================
+    # ROUTES
+    # ==================================================
+
+    route_triggers = [
+        "smartest route from",
+        "best route from",
+        "route from",
+        "directions from",
+        "distance from",
+        "get from",
+        "go from",
+        "travel from"
+    ]
+
+    for trigger in route_triggers:
+
+        if trigger in user_text and " to " in user_text:
+
+            route_text = user_text.split(trigger, 1)[-1].strip()
+            origin, destination = route_text.split(" to ", 1)
+
+            return open_route(origin, destination, map_mode)
+
+    # ==================================================
     # MAPS
     # ==================================================
 
@@ -55,7 +105,7 @@ def process_command(user_text):
 
             place = user_text.split(trigger, 1)[-1].strip()
 
-            return open_map(place)
+            return open_map(place, map_mode)
 
     # ==================================================
     # OPEN WEBSITES

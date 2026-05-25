@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JARVIS Maps</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.23.0/dist/maplibre-gl.css">
   <style>
     :root {
       color-scheme: dark;
@@ -64,6 +65,14 @@
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 10px;
+    }
+
+    .route-fields {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .search input {
@@ -132,6 +141,49 @@
       word-break: break-word;
     }
 
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #a9b2c7;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .mode-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .mode-button {
+      border: 1px solid rgba(73, 209, 255, 0.3);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(73, 209, 255, 0.08);
+      color: #dff8ff;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .mode-button.active {
+      background: #4ee7ff;
+      color: #061014;
+    }
+
     .recent {
       margin-top: 28px;
     }
@@ -164,6 +216,101 @@
       background: #11151c;
     }
 
+    #glmap {
+      width: 100%;
+      height: 100vh;
+      background: #071018;
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 420;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #glmap.gl-ready {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .map-hud {
+      position: absolute;
+      inset: 16px 16px auto auto;
+      z-index: 500;
+      min-width: 210px;
+      border: 1px solid rgba(73, 209, 255, 0.28);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(4, 11, 16, 0.82);
+      color: #dff8ff;
+      box-shadow: 0 0 28px rgba(73, 209, 255, 0.18);
+      pointer-events: none;
+    }
+
+    .mode-warning {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      z-index: 520;
+      max-width: min(420px, calc(100% - 36px));
+      border: 1px solid rgba(73, 209, 255, 0.28);
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: rgba(4, 11, 16, 0.86);
+      color: #dff8ff;
+      box-shadow: 0 0 28px rgba(73, 209, 255, 0.18);
+      line-height: 1.45;
+    }
+
+    .mode-warning strong {
+      color: #4ee7ff;
+    }
+
+    .hud-title {
+      margin: 0 0 8px;
+      color: #4ee7ff;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .hud-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 6px;
+      font-size: 12px;
+    }
+
+    .scan-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 480;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #4ee7ff, transparent);
+      box-shadow: 0 0 20px #4ee7ff;
+      animation: scan 4.5s linear infinite;
+      pointer-events: none;
+    }
+
+    .map-wrap:not(.is-4d) .scan-line {
+      display: none;
+    }
+
+    @keyframes scan {
+      from {
+        transform: translateY(0);
+      }
+
+      to {
+        transform: translateY(100vh);
+      }
+    }
+
     .fallback {
       display: grid;
       min-height: 100vh;
@@ -179,6 +326,23 @@
       line-height: 1.4;
     }
 
+    .leaflet-tile {
+      filter: hue-rotate(145deg) saturate(1.9) brightness(1.28) contrast(1.12);
+    }
+
+    .map-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 470;
+      background:
+        linear-gradient(rgba(78, 231, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78, 231, 255, 0.05) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
     @media (max-width: 820px) {
       .app-shell {
         grid-template-columns: 1fr;
@@ -190,6 +354,7 @@
       }
 
       #map,
+      #glmap,
       .map-wrap {
         height: 68vh;
         min-height: 520px;
@@ -210,6 +375,7 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@5.23.0/dist/maplibre-gl.js"></script>
   <script>
     (function () {
       if (!window.React || !window.ReactDOM || !window.L) {
@@ -234,6 +400,7 @@
       };
 
       const CACHE_KEY = "jarvis.map.geocode.cache.v1";
+      const ROUTE_CACHE_KEY = "jarvis.map.route.cache.v1";
       const RECENT_KEY = "jarvis.map.recent.v1";
       const LAST_REQUEST_KEY = "jarvis.map.last-request.v1";
       const NOMINATIM_DELAY_MS = 1100;
@@ -268,9 +435,59 @@
         return params.get("q") || params.get("place") || DEFAULT_PLACE.query;
       }
 
+      function getQueryRoute() {
+        const params = new URLSearchParams(window.location.search);
+        const origin = params.get("from") || "";
+        const destination = params.get("to") || "";
+
+        if (!origin || !destination) {
+          return null;
+        }
+
+        return {
+          origin: origin,
+          destination: destination
+        };
+      }
+
+      function getQueryMode() {
+        const params = new URLSearchParams(window.location.search);
+        const mode = (params.get("mode") || "2d").toLowerCase();
+
+        if (mode === "3d" || mode === "4d") {
+          return mode;
+        }
+
+        return "2d";
+      }
+
+      function getZoomAction() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("zoom") || "";
+      }
+
       function updateUrl(place) {
         const url = new URL(window.location.href);
+        url.searchParams.delete("from");
+        url.searchParams.delete("to");
+        url.searchParams.delete("zoom");
         url.searchParams.set("q", place);
+        window.history.replaceState({}, "", url);
+      }
+
+      function updateRouteUrl(origin, destination) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("q");
+        url.searchParams.delete("place");
+        url.searchParams.delete("zoom");
+        url.searchParams.set("from", origin);
+        url.searchParams.set("to", destination);
+        window.history.replaceState({}, "", url);
+      }
+
+      function updateModeUrl(mode) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("mode", mode);
         window.history.replaceState({}, "", url);
       }
 
@@ -325,6 +542,39 @@
         return Object.assign({}, result, { fromCache: payload.from_cache });
       }
 
+      function routeCacheKey(origin, destination) {
+        return normalizePlace(origin) + "::" + normalizePlace(destination);
+      }
+
+      async function getSmartRoute(origin, destination) {
+        const cleanOrigin = origin.trim();
+        const cleanDestination = destination.trim();
+        const cache = readJson(ROUTE_CACHE_KEY, {});
+        const cacheKey = routeCacheKey(cleanOrigin, cleanDestination);
+
+        if (cache[cacheKey]) {
+          return Object.assign({}, cache[cacheKey], { fromCache: true });
+        }
+
+        await waitForGeocodeSlot();
+
+        const url = new URL("/api/route", window.location.origin);
+        url.searchParams.set("from", cleanOrigin);
+        url.searchParams.set("to", cleanDestination);
+
+        const response = await fetch(url.toString());
+        const payload = await response.json();
+
+        if (!response.ok) {
+          throw new Error(payload.error || "Route search is unavailable right now.");
+        }
+
+        cache[cacheKey] = payload;
+        writeJson(ROUTE_CACHE_KEY, cache);
+
+        return Object.assign({}, payload, { fromCache: payload.from_cache });
+      }
+
       function saveRecent(place) {
         const recents = readJson(RECENT_KEY, []);
         const next = [
@@ -339,7 +589,18 @@
 
       function LeafletMap(props) {
         const mapRef = useRef(null);
+        const glMapRef = useRef(null);
+        const glStartMarkerRef = useRef(null);
+        const glEndMarkerRef = useRef(null);
+        const glPlaceMarkerRef = useRef(null);
         const markerRef = useRef(null);
+        const originMarkerRef = useRef(null);
+        const destinationMarkerRef = useRef(null);
+        const routeLineRef = useRef(null);
+        const animatedLineRef = useRef(null);
+        const animationTimerRef = useRef(null);
+        const rotationTimerRef = useRef(null);
+        const [glStatus, setGlStatus] = useState("idle");
 
         useEffect(function () {
           if (mapRef.current) {
@@ -349,12 +610,24 @@
           mapRef.current = L.map("map", {
             center: [props.place.lat, props.place.lon],
             zoom: 13,
-            scrollWheelZoom: true
+            scrollWheelZoom: true,
+            zoomControl: false
           });
 
-          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          L.control.zoom({
+            position: "bottomright",
+            zoomInTitle: "Zoom in",
+            zoomOutTitle: "Zoom out"
+          }).addTo(mapRef.current);
+
+          L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png", {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             maxZoom: 19
+          }).addTo(mapRef.current);
+
+          L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png", {
+            maxZoom: 19,
+            zIndex: 650
           }).addTo(mapRef.current);
 
           markerRef.current = L.marker([props.place.lat, props.place.lon], {
@@ -363,28 +636,445 @@
         }, []);
 
         useEffect(function () {
-          if (!mapRef.current || !markerRef.current) {
+          if (!mapRef.current) {
             return;
           }
 
+          if (props.zoomAction === "in") {
+            mapRef.current.setZoom(18);
+          }
+
+          if (props.zoomAction === "out") {
+            mapRef.current.setZoom(9);
+          }
+
+          if (glMapRef.current && props.zoomAction === "in") {
+            glMapRef.current.zoomTo(18, { duration: 700 });
+          }
+
+          if (glMapRef.current && props.zoomAction === "out") {
+            glMapRef.current.zoomTo(9, { duration: 700 });
+          }
+        }, [props.zoomAction]);
+
+        useEffect(function () {
+          if (props.mode === "2d") {
+            setGlStatus("idle");
+
+            if (rotationTimerRef.current) {
+              clearInterval(rotationTimerRef.current);
+              rotationTimerRef.current = null;
+            }
+
+            if (mapRef.current) {
+              setTimeout(function () {
+                mapRef.current.invalidateSize();
+              }, 80);
+            }
+            return;
+          }
+
+          if (!window.maplibregl) {
+            setGlStatus("failed");
+            return;
+          }
+
+          const target = props.route ? props.route.destination : props.place;
+          setGlStatus("loading");
+
+          if (!glMapRef.current) {
+            try {
+              glMapRef.current = new maplibregl.Map({
+                container: "glmap",
+                style: "https://tiles.openfreemap.org/styles/positron",
+                center: [target.lon, target.lat],
+                zoom: props.zoomAction === "in" ? 18 : 16,
+                pitch: props.mode === "4d" ? 68 : 58,
+                bearing: -28,
+                attributionControl: true
+              });
+            } catch (error) {
+              setGlStatus("failed");
+              return;
+            }
+
+            setTimeout(function () {
+              if (glStatus !== "ready" && glMapRef.current && !glMapRef.current.loaded()) {
+                setGlStatus("failed");
+              }
+            }, 9000);
+
+            glMapRef.current.addControl(new maplibregl.NavigationControl({
+              visualizePitch: true
+            }), "bottom-right");
+
+            glMapRef.current.on("error", function () {
+              setGlStatus("failed");
+            });
+
+            glMapRef.current.on("load", function () {
+              setGlStatus("ready");
+              setTimeout(function () {
+                glMapRef.current.resize();
+              }, 80);
+
+              glMapRef.current.addSource("openfreemap-buildings", {
+                url: "https://tiles.openfreemap.org/planet",
+                type: "vector"
+              });
+
+              const layers = glMapRef.current.getStyle().layers || [];
+              let labelLayerId = null;
+
+              for (let index = 0; index < layers.length; index += 1) {
+                if (layers[index].type === "symbol" && layers[index].layout && layers[index].layout["text-field"]) {
+                  labelLayerId = layers[index].id;
+                  break;
+                }
+              }
+
+              glMapRef.current.addLayer({
+                id: "jarvis-3d-buildings",
+                source: "openfreemap-buildings",
+                "source-layer": "building",
+                type: "fill-extrusion",
+                minzoom: 15,
+                filter: ["!=", ["get", "hide_3d"], true],
+                paint: {
+                  "fill-extrusion-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["get", "render_height"],
+                    0,
+                    "#14313a",
+                    120,
+                    "#42dfff",
+                    420,
+                    "#e9fbff"
+                  ],
+                  "fill-extrusion-height": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    15,
+                    0,
+                    16,
+                    ["get", "render_height"]
+                  ],
+                  "fill-extrusion-base": [
+                    "case",
+                    [">=", ["get", "zoom"], 16],
+                    ["get", "render_min_height"],
+                    0
+                  ],
+                  "fill-extrusion-opacity": 0.88
+                }
+              }, labelLayerId);
+            });
+          } else if (glMapRef.current.loaded()) {
+            setGlStatus("ready");
+          }
+
+          setTimeout(function () {
+            glMapRef.current.resize();
+          }, 80);
+
+          glMapRef.current.flyTo({
+            center: [target.lon, target.lat],
+            zoom: props.zoomAction === "in" ? 18 : (props.route ? 13 : 16.5),
+            pitch: props.mode === "4d" ? 68 : 58,
+            bearing: -28,
+            duration: 900
+          });
+
+          if (glPlaceMarkerRef.current) {
+            glPlaceMarkerRef.current.remove();
+            glPlaceMarkerRef.current = null;
+          }
+
+          if (glStartMarkerRef.current) {
+            glStartMarkerRef.current.remove();
+            glStartMarkerRef.current = null;
+          }
+
+          if (glEndMarkerRef.current) {
+            glEndMarkerRef.current.remove();
+            glEndMarkerRef.current = null;
+          }
+
+          if (props.route) {
+            glStartMarkerRef.current = new maplibregl.Marker({ color: "#3ddc97" })
+              .setLngLat([props.route.origin.lon, props.route.origin.lat])
+              .setPopup(new maplibregl.Popup().setHTML("<strong>Start</strong><br>" + props.route.origin.displayName))
+              .addTo(glMapRef.current);
+
+            glEndMarkerRef.current = new maplibregl.Marker({ color: "#ff5f56" })
+              .setLngLat([props.route.destination.lon, props.route.destination.lat])
+              .setPopup(new maplibregl.Popup().setHTML("<strong>Destination</strong><br>" + props.route.destination.displayName))
+              .addTo(glMapRef.current);
+          } else {
+            glPlaceMarkerRef.current = new maplibregl.Marker({ color: "#3ddc97" })
+              .setLngLat([target.lon, target.lat])
+              .setPopup(new maplibregl.Popup().setHTML("<strong>" + target.query + "</strong><br>" + target.displayName))
+              .addTo(glMapRef.current);
+          }
+
+          function syncGlRoute() {
+            if (!glMapRef.current.isStyleLoaded()) {
+              return;
+            }
+
+            if (!props.route) {
+              if (glMapRef.current.getLayer("jarvis-route-line")) {
+                glMapRef.current.removeLayer("jarvis-route-line");
+              }
+
+              if (glMapRef.current.getSource("jarvis-route")) {
+                glMapRef.current.removeSource("jarvis-route");
+              }
+              return;
+            }
+
+            const routeGeoJson = {
+              type: "Feature",
+              geometry: {
+                type: "LineString",
+                coordinates: props.route.coordinates.map(function (point) {
+                  return [point.lon, point.lat];
+                })
+              },
+              properties: {}
+            };
+
+            if (glMapRef.current.getSource("jarvis-route")) {
+              glMapRef.current.getSource("jarvis-route").setData(routeGeoJson);
+            } else {
+              glMapRef.current.addSource("jarvis-route", {
+                type: "geojson",
+                data: routeGeoJson
+              });
+
+              glMapRef.current.addLayer({
+                id: "jarvis-route-line",
+                type: "line",
+                source: "jarvis-route",
+                layout: {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                paint: {
+                  "line-color": "#3ddc97",
+                  "line-width": 6,
+                  "line-opacity": 0.9
+                }
+              });
+            }
+          }
+
+          if (glMapRef.current.isStyleLoaded()) {
+            syncGlRoute();
+          } else {
+            glMapRef.current.once("load", syncGlRoute);
+          }
+
+          if (rotationTimerRef.current) {
+            clearInterval(rotationTimerRef.current);
+            rotationTimerRef.current = null;
+          }
+
+          if (props.mode === "4d") {
+            let rotation = glMapRef.current.getBearing();
+            rotationTimerRef.current = setInterval(function () {
+              rotation = (rotation + 0.4) % 360;
+              glMapRef.current.rotateTo(rotation, { duration: 0 });
+            }, 60);
+          }
+        }, [props.mode, props.place, props.route, props.zoomAction]);
+
+        useEffect(function () {
+          if (!mapRef.current) {
+            return;
+          }
+
+          if (props.route) {
+            return;
+          }
+
+          if (animationTimerRef.current) {
+            clearInterval(animationTimerRef.current);
+          }
+
+          if (routeLineRef.current) {
+            routeLineRef.current.remove();
+            routeLineRef.current = null;
+          }
+
+          if (animatedLineRef.current) {
+            animatedLineRef.current.remove();
+            animatedLineRef.current = null;
+          }
+
+          if (originMarkerRef.current) {
+            originMarkerRef.current.remove();
+            originMarkerRef.current = null;
+          }
+
+          if (destinationMarkerRef.current) {
+            destinationMarkerRef.current.remove();
+            destinationMarkerRef.current = null;
+          }
+
           const position = [props.place.lat, props.place.lon];
-          mapRef.current.flyTo(position, 13, { duration: 0.85 });
+          markerRef.current.addTo(mapRef.current);
+          const targetZoom = props.zoomAction === "in" ? 18 : (props.zoomAction === "out" ? 9 : 15);
+          mapRef.current.flyTo(position, targetZoom, { duration: 0.85 });
           markerRef.current.setLatLng(position);
           markerRef.current.bindPopup(
             "<strong>" + props.place.query + "</strong><br>" + props.place.displayName
           ).openPopup();
-        }, [props.place]);
+        }, [props.place, props.route, props.zoomAction]);
 
-        return e("div", { id: "map" });
+        useEffect(function () {
+          if (!mapRef.current || !props.route) {
+            return;
+          }
+
+          if (animationTimerRef.current) {
+            clearInterval(animationTimerRef.current);
+          }
+
+          if (markerRef.current) {
+            markerRef.current.remove();
+          }
+
+          if (originMarkerRef.current) {
+            originMarkerRef.current.remove();
+          }
+
+          if (destinationMarkerRef.current) {
+            destinationMarkerRef.current.remove();
+          }
+
+          if (routeLineRef.current) {
+            routeLineRef.current.remove();
+          }
+
+          if (animatedLineRef.current) {
+            animatedLineRef.current.remove();
+          }
+
+          const routePoints = props.route.coordinates.map(function (point) {
+            return [point.lat, point.lon];
+          });
+          const originPosition = [
+            props.route.origin.lat,
+            props.route.origin.lon
+          ];
+          const destinationPosition = [
+            props.route.destination.lat,
+            props.route.destination.lon
+          ];
+
+          originMarkerRef.current = L.marker(originPosition, {
+            icon: markerIcon
+          }).addTo(mapRef.current).bindPopup(
+            "<strong>Start</strong><br>" + props.route.origin.displayName
+          );
+
+          destinationMarkerRef.current = L.marker(destinationPosition, {
+            icon: markerIcon
+          }).addTo(mapRef.current).bindPopup(
+            "<strong>Destination</strong><br>" + props.route.destination.displayName
+          );
+
+          routeLineRef.current = L.polyline(routePoints, {
+            color: "#7d8cff",
+            opacity: 0.35,
+            weight: 7
+          }).addTo(mapRef.current);
+
+          animatedLineRef.current = L.polyline([], {
+            color: "#3ddc97",
+            opacity: 0.95,
+            weight: 5
+          }).addTo(mapRef.current);
+
+          if (props.zoomAction === "in") {
+            mapRef.current.flyTo(destinationPosition, 18, { duration: 0.85 });
+          } else if (props.zoomAction === "out") {
+            mapRef.current.fitBounds(routeLineRef.current.getBounds(), {
+              padding: [70, 70],
+              maxZoom: 8
+            });
+          } else {
+            mapRef.current.fitBounds(routeLineRef.current.getBounds(), {
+              padding: [44, 44]
+            });
+          }
+
+          let index = 0;
+          const batchSize = Math.max(1, Math.ceil(routePoints.length / 180));
+
+          animationTimerRef.current = setInterval(function () {
+            index = Math.min(routePoints.length, index + batchSize);
+            animatedLineRef.current.setLatLngs(routePoints.slice(0, index));
+
+            if (index >= routePoints.length) {
+              clearInterval(animationTimerRef.current);
+            }
+          }, 18);
+        }, [props.route, props.zoomAction]);
+
+        return e(React.Fragment, null,
+          e("div", { id: "map" }),
+          e("div", { id: "glmap", className: glStatus === "ready" ? "gl-ready" : "" }),
+          e("div", { className: "scan-line" }),
+          props.mode !== "2d" && glStatus !== "ready" && e("div", { className: "mode-warning" },
+            e("strong", null, glStatus === "failed" ? "3D engine could not load." : "Loading 3D city data..."),
+            e("br"),
+            glStatus === "failed"
+              ? "Keeping the labelled 2D map visible. Check internet access to OpenFreeMap/MapLibre CDN."
+              : "The labelled 2D map will stay visible until 3D tiles are ready."
+          ),
+          e("div", { className: "map-hud" },
+            e("p", { className: "hud-title" }, props.mode.toUpperCase() + " Navigation Analysis"),
+            e("div", { className: "hud-line" },
+              e("span", null, "Style"),
+              e("strong", null, "Cyber Grid")
+            ),
+            e("div", { className: "hud-line" },
+              e("span", null, "Labels"),
+              e("strong", null, "English Panel")
+            ),
+            e("div", { className: "hud-line" },
+              e("span", null, "Buildings"),
+              e("strong", null, props.mode === "2d" ? "Off" : "OSM Real Data")
+            )
+          )
+        );
       }
 
       function App() {
-        const initialPlace = useMemo(function () {
-          return getQueryPlace();
+        const initialRoute = useMemo(function () {
+          return getQueryRoute();
         }, []);
+        const initialMode = useMemo(function () {
+          return getQueryMode();
+        }, []);
+        const initialZoomAction = useMemo(function () {
+          return getZoomAction();
+        }, []);
+        const initialPlace = useMemo(function () {
+          return initialRoute ? initialRoute.destination : getQueryPlace();
+        }, [initialRoute]);
         const lastRequestedPlace = useRef("");
+        const lastRequestedRoute = useRef("");
         const [searchText, setSearchText] = useState(initialPlace);
+        const [routeOrigin, setRouteOrigin] = useState(initialRoute ? initialRoute.origin : "");
+        const [routeDestination, setRouteDestination] = useState(initialRoute ? initialRoute.destination : "");
         const [place, setPlace] = useState(DEFAULT_PLACE);
+        const [route, setRoute] = useState(null);
+        const [mode, setMode] = useState(initialMode);
         const [recent, setRecent] = useState(function () {
           return readJson(RECENT_KEY, []);
         });
@@ -410,6 +1100,7 @@
             }
 
             setPlace(result);
+            setRoute(null);
             setSearchText(cleanPlace);
             updateUrl(cleanPlace);
             setRecent(saveRecent(cleanPlace));
@@ -421,7 +1112,44 @@
           }
         }
 
+        async function showRoute(origin, destination) {
+          const cleanOrigin = origin.trim();
+          const cleanDestination = destination.trim();
+
+          if (!cleanOrigin || !cleanDestination || isLoading) {
+            return;
+          }
+
+          lastRequestedRoute.current = cleanOrigin + "::" + cleanDestination;
+          setIsLoading(true);
+          setStatus("Finding smartest route...");
+
+          try {
+            const result = await getSmartRoute(cleanOrigin, cleanDestination);
+
+            if (lastRequestedRoute.current !== cleanOrigin + "::" + cleanDestination) {
+              return;
+            }
+
+            setRoute(result);
+            setRouteOrigin(cleanOrigin);
+            setRouteDestination(cleanDestination);
+            setPlace(result.destination);
+            updateRouteUrl(cleanOrigin, cleanDestination);
+            setStatus(result.fromCache ? "Route loaded from cache." : "Route found and saved to cache.");
+          } catch (error) {
+            setStatus(error.message || "Route search failed.");
+          } finally {
+            setIsLoading(false);
+          }
+        }
+
         useEffect(function () {
+          if (initialRoute) {
+            showRoute(initialRoute.origin, initialRoute.destination);
+            return;
+          }
+
           showPlace(initialPlace);
         }, []);
 
@@ -430,10 +1158,32 @@
           showPlace(searchText);
         }
 
+        function submitRoute(event) {
+          event.preventDefault();
+          showRoute(routeOrigin, routeDestination);
+        }
+
+        function switchMode(nextMode) {
+          setMode(nextMode);
+          updateModeUrl(nextMode);
+        }
+
         return e("main", { className: "app-shell" },
           e("aside", { className: "panel" },
             e("h1", { className: "brand" }, "JARVIS Maps"),
-            e("p", { className: "subtitle" }, "Ask JARVIS for a place and the map will open here. Repeated searches use local cache first."),
+            e("p", { className: "subtitle" }, "Ask JARVIS for a place or a route. Repeated searches use local cache first."),
+            e("div", { className: "mode-controls" },
+              ["2d", "3d", "4d"].map(function (item) {
+                return e("button", {
+                  className: "mode-button" + (mode === item ? " active" : ""),
+                  key: item,
+                  onClick: function () {
+                    switchMode(item);
+                  },
+                  type: "button"
+                }, item.toUpperCase());
+              })
+            ),
             e("form", { className: "search", onSubmit: submitSearch },
               e("div", { className: "search-row" },
                 e("input", {
@@ -448,10 +1198,46 @@
               ),
               e("div", { className: "status", role: "status" }, status)
             ),
+            e("form", { className: "route-fields", onSubmit: submitRoute },
+              e("input", {
+                "aria-label": "Route start",
+                value: routeOrigin,
+                onChange: function (event) {
+                  setRouteOrigin(event.target.value);
+                },
+                placeholder: "Start point"
+              }),
+              e("input", {
+                "aria-label": "Route destination",
+                value: routeDestination,
+                onChange: function (event) {
+                  setRouteDestination(event.target.value);
+                },
+                placeholder: "Destination"
+              }),
+              e("button", { disabled: isLoading, type: "submit" }, isLoading ? "..." : "Route")
+            ),
             e("section", { className: "result" },
-              e("h2", null, "Current Place"),
-              e("p", { className: "result-name" }, place.displayName),
-              e("p", { className: "coords" }, place.lat.toFixed(5) + ", " + place.lon.toFixed(5))
+              e("h2", null, route ? "Smartest Route" : "Current Place"),
+              route
+                ? e("div", null,
+                    e("p", { className: "result-name" }, route.origin.query + " to " + route.destination.query),
+                    e("p", { className: "coords" }, route.origin.displayName + " -> " + route.destination.displayName),
+                    e("div", { className: "summary-grid" },
+                      e("div", { className: "metric" },
+                        e("span", { className: "metric-label" }, "Distance"),
+                        e("strong", null, route.distanceKm + " km")
+                      ),
+                      e("div", { className: "metric" },
+                        e("span", { className: "metric-label" }, "Estimated time"),
+                        e("strong", null, route.durationText)
+                      )
+                    )
+                  )
+                : e("div", null,
+                    e("p", { className: "result-name" }, place.displayName),
+                    e("p", { className: "coords" }, place.lat.toFixed(5) + ", " + place.lon.toFixed(5))
+                  )
             ),
             recent.length > 0 && e("section", { className: "recent" },
               e("h2", null, "Recent"),
@@ -469,8 +1255,8 @@
               )
             )
           ),
-          e("section", { className: "map-wrap" },
-            e(LeafletMap, { place: place })
+          e("section", { className: "map-wrap " + (mode === "4d" ? "is-4d" : "") },
+            e(LeafletMap, { place: place, route: route, mode: mode, zoomAction: initialZoomAction })
           )
         );
       }

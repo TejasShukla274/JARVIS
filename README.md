@@ -148,10 +148,18 @@ Ask JARVIS for a map with commands like:
 jarvis show map of Delhi
 jarvis where is Japan
 jarvis locate Ayodhya
+jarvis route from Greater Noida to Mumbai
+jarvis smartest route from Ayodhya to Lucknow
+jarvis show 3d map of Statue of Liberty
+jarvis 4d route from Greater Noida to Mumbai
+jarvis zoom in
+jarvis zoom out
 ```
 
 JARVIS opens a local React Leaflet map at `http://127.0.0.1:8765`.
 Place searches are cached in `memory/map_cache.json`, and repeat searches are loaded from cache instead of calling the geocoding service again.
+Routes are cached in `memory/route_cache.json`, and the map shows distance, estimated travel time, and an animated route line.
+The default 2D map uses a dark futuristic basemap with city, country, and street label overlays. The 3D/4D modes use MapLibre with OpenFreeMap/OpenStreetMap vector building geometry where that locality has building data.
 
 ---
 

@@ -16,5 +16,53 @@
         "displayName": "Manchester, Greater Manchester, England, United Kingdom",
         "lat": 53.4424618,
         "lon": -2.2324547
+    },
+    "india": {
+        "query": "india",
+        "displayName": "India",
+        "lat": 22.3511148,
+        "lon": 78.6677428
+    },
+    "greater noida": {
+        "query": "greater noida",
+        "displayName": "Greater Noida, Gautam Buddha Nagar, Uttar Pradesh, 210310, India",
+        "lat": 28.4670734,
+        "lon": 77.5137649
+    },
+    "taj": {
+        "query": "taj",
+        "displayName": "\u4ee3\u53bf, \u5ffb\u5dde\u5e02, \u5c71\u897f\u7701, \u4e2d\u56fd",
+        "lat": 39.0949984,
+        "lon": 113.0430311
+    },
+    "galgotias university": {
+        "query": "galgotias university",
+        "displayName": "Galgotias University, Yamuna Expressway, Dankaur, Gautam Buddha Nagar, Uttar Pradesh, 203200, India",
+        "lat": 28.3671232,
+        "lon": 77.5404599
+    },
+    "statue of liberty": {
+        "query": "statue of liberty",
+        "displayName": "Statue of Liberty, Flagpole Plaza, Manhattan, New York County, New York, 10004, United States",
+        "lat": 40.6892532,
+        "lon": -74.0445482
+    },
+    "mumbai": {
+        "query": "mumbai",
+        "displayName": "Mumbai, Mumbai Suburban District, Maharashtra, 400051, India",
+        "lat": 19.054999,
+        "lon": 72.8692035
+    },
+    "statue": {
+        "query": "statue",
+        "displayName": "Statue, Brives-Charensac, Le Puy-en-Velay, Haute-Loire, Auvergne-Rh\u00f4ne-Alpes, Metropolitan France, 43700, France",
+        "lat": 45.0531936,
+        "lon": 3.9137904
+    },
+    "status": {
+        "query": "status",
+        "displayName": "Bahrain",
+        "lat": 26.1551249,
+        "lon": 50.5344606
     }
 }
