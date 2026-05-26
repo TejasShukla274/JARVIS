@@ -215,4 +215,4 @@ If you like this project:
 
 # 📜 License
 
-This project is for educational and personal development purposes.
+This project is for educational and personal development purposes..
