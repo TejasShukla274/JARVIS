@@ -17,8 +17,7 @@ from PyQt5.QtCore import QObject, Qt, QTimer, pyqtSignal
 from gui.gui_state import get_state
 from gui import audio_reactive
 from gui.reminder_panel import ReminderPanel
-from scheduler.background_scheduler import get_scheduler
-from gui.alarm_popup import AlarmPopup
+from scheduler.reminder_scheduler import ReminderScheduler
 from voice.voice_output import speak
 
 
@@ -180,7 +179,7 @@ class JarvisWindow(QWidget):
 
         self.orb.setParent(self)
 
-        # Keep the orb fill full window so center is correct.
+        # ✅ FIX: make orb fill full window so center is correct
         self.reminder_panel = ReminderPanel()
         self.reminder_panel.setParent(self)
 
@@ -189,21 +188,16 @@ class JarvisWindow(QWidget):
             self.show_reminder_notification
         )
 
-        self.reminder_scheduler = None
-
-        self.productivity_scheduler = get_scheduler()
-        self.productivity_scheduler.alarm_triggered.connect(self.show_alarm_popup)
-        self.productivity_scheduler.reminder_triggered.connect(self.show_productivity_reminder)
-        self.productivity_scheduler.timer_completed.connect(self.show_timer_popup)
-        if not self.productivity_scheduler.isRunning():
-            self.productivity_scheduler.start()
-        self.active_popups = []
+        self.reminder_scheduler = ReminderScheduler(
+            self.reminder_bridge.reminder_due.emit
+        )
+        self.reminder_scheduler.start()
 
         self.layout_children()
 
     def resizeEvent(self, event):
 
-        # Keep the orb centered on resize.
+        # ✅ keeps orb centered on resize
         self.layout_children()
 
         super().resizeEvent(event)
@@ -235,59 +229,9 @@ class JarvisWindow(QWidget):
 
         speak(f"Reminder. {message}")
 
-    def dashboard_is_handling_alerts(self):
-        try:
-            import gui.dashboard_window as dashboard_window
-            return dashboard_window._global_window is not None
-        except Exception:
-            return False
-
-    def keep_popup(self, popup):
-        self.active_popups.append(popup)
-        popup.destroyed.connect(lambda _=None, ref=popup: self.active_popups.remove(ref) if ref in self.active_popups else None)
-        popup.show()
-        popup.raise_()
-        popup.activateWindow()
-
-    def show_alarm_popup(self, alarm):
-        if self.dashboard_is_handling_alerts():
-            return
-        popup = AlarmPopup(
-            title="Alarm Ringing",
-            label=alarm.get("label") or "Alarm",
-            is_reminder=False,
-            custom_sound=alarm.get("custom_sound"),
-            volume=alarm.get("volume") or 85
-        )
-        self.keep_popup(popup)
-
-    def show_productivity_reminder(self, reminder):
-        if self.dashboard_is_handling_alerts():
-            return
-        popup = AlarmPopup(
-            title="Reminder Alert",
-            label=reminder.get("text") or "Reminder",
-            is_reminder=True,
-            volume=65
-        )
-        self.keep_popup(popup)
-
-    def show_timer_popup(self, timer):
-        if self.dashboard_is_handling_alerts():
-            return
-        popup = AlarmPopup(
-            title="Timer Completed",
-            label=timer.get("label") or "Countdown complete",
-            is_reminder=True,
-            volume=70
-        )
-        self.keep_popup(popup)
-
     def closeEvent(self, event):
 
-        if self.reminder_scheduler:
-            self.reminder_scheduler.stop()
-        self.productivity_scheduler.stop()
+        self.reminder_scheduler.stop()
 
         super().closeEvent(event)
 
@@ -297,8 +241,7 @@ def launch_gui():
 
     app = QApplication(sys.argv)
 
-    from gui.dashboard_window import get_dashboard_window
-    window = get_dashboard_window()
+    window = JarvisWindow()
 
     window.show()
 

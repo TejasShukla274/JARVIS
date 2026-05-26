@@ -4,6 +4,7 @@ import re
 
 from memory.owner_profile import get_owner_info
 from brain.ai_engine import ask_jarvis
+from vision.vision_detector import detect_objects
 
 from music.spotify_controller import (
     play_music,
@@ -55,10 +56,6 @@ def parse_duration_seconds(text):
     return None
 
 
-def has_any_word(text, words):
-    return any(re.search(rf"\b{re.escape(word)}\b", text) for word in words)
-
-
 def start_countdown_from_command(user_text):
     seconds = parse_duration_seconds(user_text)
 
@@ -82,14 +79,6 @@ def start_countdown_from_command(user_text):
     return f"Starting a countdown timer for {seconds} seconds."
 
 
-def open_dashboard_tab(index):
-    from gui.dashboard_window import get_dashboard_window
-    from PyQt5.QtCore import QTimer
-
-    QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-    QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(index))
-
-
 def process_command(user_text):
 
     import re
@@ -108,9 +97,7 @@ def process_command(user_text):
         or user_text.startswith("add reminder")
     ):
 
-        response = create_reminder_from_command(user_text)
-        open_dashboard_tab(3)
-        return response
+        return create_reminder_from_command(user_text)
 
     if (
         user_text.startswith("delete reminder")
@@ -128,7 +115,6 @@ def process_command(user_text):
         or "open reminders" in user_text
     ):
 
-        open_dashboard_tab(3)
         return format_upcoming_reminders()
 
     # ==================================================
@@ -157,31 +143,10 @@ def process_command(user_text):
 
         return "Opening the stopwatch chronometer, Sir."
 
-    if "timer" in user_text and has_any_word(user_text, ["pause", "resume", "reset", "cancel", "stop"]):
-        from scheduler.background_scheduler import get_scheduler
-        scheduler = get_scheduler()
-        timers = scheduler.get_active_timers()
-        if not timers:
-            open_dashboard_tab(5)
-            return "There are no active timers, Sir."
-        target_id = timers[0]["id"]
-        if "pause" in user_text or "stop" in user_text:
-            scheduler.pause_timer(target_id)
-            open_dashboard_tab(5)
-            return "Timer paused, Sir."
-        if "resume" in user_text:
-            scheduler.resume_timer(target_id)
-            open_dashboard_tab(5)
-            return "Timer resumed, Sir."
-        if "reset" in user_text:
-            scheduler.reset_timer(target_id)
-            open_dashboard_tab(5)
-            return "Timer reset, Sir."
-        scheduler.stop_timer(target_id)
-        open_dashboard_tab(5)
-        return "Timer cancelled, Sir."
-
-    if "timer" in user_text and has_any_word(user_text, ["start", "set", "create", "run"]):
+    if "timer" in user_text and any(
+        word in user_text
+        for word in ["start", "set", "create", "run"]
+    ):
 
         return start_countdown_from_command(user_text)
 
@@ -194,6 +159,8 @@ def process_command(user_text):
 
         from utils.nlp_parser import parse_alarm_nlp
         from database.db_manager import add_alarm
+        from gui.dashboard_window import get_dashboard_window
+        from PyQt5.QtCore import QTimer
 
         time_str, label = parse_alarm_nlp(user_text)
 
@@ -202,7 +169,8 @@ def process_command(user_text):
 
         add_alarm(time=time_str, label=label, repeat_days="[]", is_active=1)
 
-        open_dashboard_tab(4)
+        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
+        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(4))
 
         return f"Understood. Alarm registered for {time_str} labeled {label}, Sir."
 
@@ -215,6 +183,8 @@ def process_command(user_text):
 
         from utils.nlp_parser import parse_alarm_nlp
         from database.db_manager import delete_alarm, get_alarms
+        from gui.dashboard_window import get_dashboard_window
+        from PyQt5.QtCore import QTimer
 
         time_str, _ = parse_alarm_nlp(user_text)
 
@@ -228,7 +198,8 @@ def process_command(user_text):
                 delete_alarm(alarm["id"])
                 deleted_count += 1
 
-        open_dashboard_tab(4)
+        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
+        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(4))
 
         if deleted_count == 0:
             return f"I could not find an alarm for {time_str}."
@@ -546,7 +517,6 @@ def process_command(user_text):
         or "look around" in user_text
     ):
 
-        from vision.vision_detector import detect_objects
         objects = detect_objects()
 
         if objects:
@@ -562,9 +532,8 @@ def process_command(user_text):
     # ==================================================
 
     elif "time" in user_text:
-        from utils.time_service import format_clock
 
-        current_time = format_clock(with_seconds=False)
+        current_time = datetime.datetime.now().strftime("%I:%M %p")
 
         return f"The current time is {current_time}."
 

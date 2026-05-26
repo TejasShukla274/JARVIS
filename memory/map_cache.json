@@ -64,5 +64,17 @@
         "displayName": "Bahrain",
         "lat": 26.1551249,
         "lon": 50.5344606
+    },
+    "ram mandir": {
+        "query": "ram mandir",
+        "displayName": "Ram Mandir, Ram Mandir Road, Goregaon West, P/S Ward, Mumbai Zone 4, Mumbai, Mumbai Suburban District, Maharashtra, 400104, India",
+        "lat": 19.151023,
+        "lon": 72.8501467
+    },
+    "ram mandir in ayodhya": {
+        "query": "ram mandir in ayodhya",
+        "displayName": "Sri Ram Janmabhoomi Mandir, Kanak Bhawan Road, Sai Nagar, Ayodhya, Faizabad, Ayodhya, Uttar Pradesh, 224123, India",
+        "lat": 26.7956398,
+        "lon": 82.1945757
     }
 }
