@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QScrollArea, QFrame, QLineEdit
 )
 from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtCore import Qt, QTimer, QElapsedTimer
+from PyQt5.QtCore import Qt, QTimer, QElapsedTimer, pyqtSlot
 
 from scheduler.background_scheduler import get_scheduler
 from utils.audio_player import play_notification_beep
@@ -218,15 +218,17 @@ class StopwatchTimerTab(QWidget):
         else:
             self.start_stopwatch()
 
+    @pyqtSlot()
     def start_stopwatch(self):
         if self.sw_running:
             return
-        self.sw_elapsed.restart()
+        self.sw_elapsed.start()
         self.sw_running = True
         self.btn_sw_start.setText("Pause")
         self.btn_sw_start.setStyleSheet(styles.button_style(styles.CYAN))
         self.btn_sw_lap.setEnabled(True)
 
+    @pyqtSlot()
     def pause_stopwatch(self):
         if not self.sw_running:
             return
@@ -236,6 +238,7 @@ class StopwatchTimerTab(QWidget):
         self.btn_sw_start.setStyleSheet(styles.button_style(styles.GREEN))
         self.btn_sw_lap.setEnabled(False)
 
+    @pyqtSlot()
     def reset_stopwatch(self):
         self.sw_running = False
         self.sw_base_ms = 0

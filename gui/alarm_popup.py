@@ -28,7 +28,7 @@ class AlarmPopup(QWidget):
             Qt.Tool
         )
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.resize(450, 250)
+        self.resize(500, 300)
         
         # Center of screen
         self.center_on_screen()
@@ -73,15 +73,24 @@ class AlarmPopup(QWidget):
         self.update()
 
     def setup_ui(self):
-        layout = QVBoxLayout()
-        layout.setContentsMargins(25, 25, 25, 25)
+        # Main layout has 25px margins to allow drawing of container's shadow
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(25, 25, 25, 25)
         
-        # Glow Effect border
-        self.shadow = QGraphicsDropShadowEffect(self)
+        # Inner container widget
+        self.container = QWidget()
+        self.container.setObjectName("container")
+        self.container.setStyleSheet("background: transparent;")
+        
+        # Glow Effect border on the container
+        self.shadow = QGraphicsDropShadowEffect(self.container)
         self.shadow.setBlurRadius(25)
         self.shadow.setColor(QColor(0, 170, 255, 180) if self.is_reminder else QColor(255, 40, 40, 180))
         self.shadow.setOffset(0, 0)
-        self.setGraphicsEffect(self.shadow)
+        self.container.setGraphicsEffect(self.shadow)
+        
+        layout = QVBoxLayout(self.container)
+        layout.setContentsMargins(20, 20, 20, 20)
 
         # Header Title
         title_lbl = QLabel(self.title.upper())
@@ -140,7 +149,7 @@ class AlarmPopup(QWidget):
         btn_layout.addWidget(stop_btn)
 
         layout.addLayout(btn_layout)
-        self.setLayout(layout)
+        main_layout.addWidget(self.container)
 
     def trigger_alert(self):
         # 1. Start alarm loop audio
@@ -185,20 +194,24 @@ class AlarmPopup(QWidget):
         super().closeEvent(event)
 
     def paintEvent(self, event):
+        if not hasattr(self, 'container'):
+            return
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         
         # Cyber-punk semi-transparent glass background with red/blue pulsing gradient border
         glow_color = QColor(0, 170, 255, self._glow_intensity) if self.is_reminder else QColor(255, 40, 40, self._glow_intensity)
         
+        geom = self.container.geometry()
+        
         painter.setBrush(QColor(10, 10, 15, 235))
         painter.setPen(Qt.NoPen)
-        painter.drawRoundedRect(self.rect(), 12, 12)
+        painter.drawRoundedRect(geom, 12, 12)
         
         # Pulsing neon border lines
         painter.setBrush(Qt.NoBrush)
         painter.setPen(glow_color)
-        painter.drawRoundedRect(self.rect(), 12, 12)
+        painter.drawRoundedRect(geom, 12, 12)
 
 
 if __name__ == "__main__":

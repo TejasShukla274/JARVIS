@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
     QStackedWidget, QSystemTrayIcon, QStyle, QMenu, QAction, QApplication
 )
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot
 
 from scheduler.background_scheduler import get_scheduler
 from gui.dashboard_tab import DashboardTab
@@ -153,6 +153,7 @@ class DashboardWindow(QMainWindow):
 
     # ── Tab switching ────────────────────────────────────────────────────
 
+    @pyqtSlot(int)
     def switch_tab(self, index):
         self.stack.setCurrentIndex(index)
         self._active_tab_index = index

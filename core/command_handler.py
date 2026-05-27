@@ -84,10 +84,11 @@ def start_countdown_from_command(user_text):
 
 def open_dashboard_tab(index):
     from gui.dashboard_window import get_dashboard_window
-    from PyQt5.QtCore import QTimer
+    from PyQt5.QtCore import QMetaObject, Qt, Q_ARG
 
-    QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-    QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(index))
+    window = get_dashboard_window()
+    QMetaObject.invokeMethod(window, "showNormal", Qt.QueuedConnection)
+    QMetaObject.invokeMethod(window, "switch_tab", Qt.QueuedConnection, Q_ARG(int, index))
 
 
 def process_command(user_text):
@@ -138,21 +139,21 @@ def process_command(user_text):
     if "stopwatch" in user_text:
 
         from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
+        from PyQt5.QtCore import QMetaObject, Qt
 
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(5))
+        open_dashboard_tab(5)
+        window = get_dashboard_window()
 
         if any(word in user_text for word in ["start", "starting", "run"]):
-            QTimer.singleShot(80, lambda: get_dashboard_window().tab_stopwatch.start_stopwatch())
+            QMetaObject.invokeMethod(window.tab_stopwatch, "start_stopwatch", Qt.QueuedConnection)
             return "Starting the stopwatch chronometer, Sir."
 
         if any(word in user_text for word in ["pause", "stop"]):
-            QTimer.singleShot(80, lambda: get_dashboard_window().tab_stopwatch.pause_stopwatch())
+            QMetaObject.invokeMethod(window.tab_stopwatch, "pause_stopwatch", Qt.QueuedConnection)
             return "Pausing the stopwatch chronometer, Sir."
 
         if "reset" in user_text:
-            QTimer.singleShot(80, lambda: get_dashboard_window().tab_stopwatch.reset_stopwatch())
+            QMetaObject.invokeMethod(window.tab_stopwatch, "reset_stopwatch", Qt.QueuedConnection)
             return "Resetting the stopwatch chronometer, Sir."
 
         return "Opening the stopwatch chronometer, Sir."
@@ -245,18 +246,12 @@ def process_command(user_text):
         or "show productivity" in user_text 
         or "productivity cockpit" in user_text
     ):
-        from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(0))
+        open_dashboard_tab(0)
         return "Opening the productivity cockpit dashboard, Sir."
 
     # 2. Open Calendar
     elif "open calendar" in user_text or "show calendar" in user_text:
-        from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(1))
+        open_dashboard_tab(1)
         return "Accessing your calendar ledger now, Sir."
 
     # 3. Tasks / Kanban board
@@ -266,26 +261,17 @@ def process_command(user_text):
         or "show tasks" in user_text 
         or "kanban" in user_text
     ):
-        from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(2))
+        open_dashboard_tab(2)
         return "Opening task schematics board, Sir."
 
     # 4. Reminders
     elif "open reminders" in user_text or "show reminders" in user_text:
-        from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(3))
+        open_dashboard_tab(3)
         return "Opening reminders logs, Sir."
 
     # 5. Alarms
     elif "open alarms" in user_text or "show alarms" in user_text:
-        from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(4))
+        open_dashboard_tab(4)
         return "Opening alarm configuration panels, Sir."
 
     # 6. Stopwatch & Timers
@@ -295,11 +281,10 @@ def process_command(user_text):
         or "start stopwatch" in user_text
     ):
         from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(5))
+        from PyQt5.QtCore import QMetaObject, Qt
+        open_dashboard_tab(5)
         if "start stopwatch" in user_text:
-            QTimer.singleShot(80, lambda: get_dashboard_window().tab_stopwatch.toggle_stopwatch())
+            QMetaObject.invokeMethod(get_dashboard_window().tab_stopwatch, "start_stopwatch", Qt.QueuedConnection)
             return "Starting the stopwatch chronometer, Sir."
         return "Opening chronos and countdown timers, Sir."
 
@@ -323,17 +308,13 @@ def process_command(user_text):
                 secs = val * 3600
                 label = f"Timer ({val}h)"
                 
-            from gui.dashboard_window import get_dashboard_window
             from scheduler.background_scheduler import get_scheduler
             import uuid
-            from PyQt5.QtCore import QTimer
             
             tid = str(uuid.uuid4())
             get_scheduler().start_timer(tid, secs, label)
             
-            QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-            QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(5))
-            
+            open_dashboard_tab(5)
             return f"Understood, starting a {val} {unit} countdown, Sir."
 
     # 8. Conversational Alarm Setting
@@ -343,10 +324,7 @@ def process_command(user_text):
         time_str, label = parse_alarm_nlp(user_text)
         if time_str:
             add_alarm(time=time_str, label=label, repeat_days="[]", is_active=1)
-            from gui.dashboard_window import get_dashboard_window
-            from PyQt5.QtCore import QTimer
-            QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-            QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(4))
+            open_dashboard_tab(4)
             return f"Understood. Alarm registered for {time_str} labeled {label}, Sir."
         else:
             return "Could you specify the target alarm time, Sir?"
@@ -369,10 +347,7 @@ def process_command(user_text):
             recurrence="None"
         )
         
-        from gui.dashboard_window import get_dashboard_window
-        from PyQt5.QtCore import QTimer
-        QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-        QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(3))
+        open_dashboard_tab(3)
         return f"Confirming reminder registered: {label} scheduled for {dt_str}, Sir."
 
     # 10. Conversational Task Creation
@@ -392,10 +367,7 @@ def process_command(user_text):
                 priority="Medium", 
                 status="todo"
             )
-            from gui.dashboard_window import get_dashboard_window
-            from PyQt5.QtCore import QTimer
-            QTimer.singleShot(0, lambda: get_dashboard_window().showNormal())
-            QTimer.singleShot(0, lambda: get_dashboard_window().switch_tab(2))
+            open_dashboard_tab(2)
             return f"Task deployed to schematics board: {title}, Sir."
         else:
             return "Could you please specify the task title, Sir?"
@@ -478,7 +450,102 @@ def process_command(user_text):
             return open_map(place, map_mode)
 
     # ==================================================
+    # TIME / DATE / OWNER QUESTIONS (LOCAL OFFLINE)
+    # ==================================================
+
+    if "who am i" in user_text:
+
+        return f"Your name is {get_owner_info('name')}."
+
+    elif "birthday" in user_text:
+
+        return f"Your birthday is on {get_owner_info('birthday')}."
+
+    elif "where do i live" in user_text:
+
+        return f"You live in {get_owner_info('city')}."
+
+    elif "who created you" in user_text:
+
+        return f"I was created by {get_owner_info('creator')}."
+
+    elif "time" in user_text:
+        from utils.time_service import format_clock
+
+        current_time = format_clock(with_seconds=False)
+
+        return f"The current time is {current_time}."
+
+    elif "today" in user_text and ("day" in user_text or "date" in user_text) and not any(neg in user_text for neg in ["weather", "news", "remind", "reminder", "alarm", "task", "stopwatch", "timer"]):
+        current_date = datetime.datetime.now().strftime("%A, %d %B %Y")
+        return f"Today is {current_date}."
+
+    elif "day" in user_text and (" on " in user_text or " is " in user_text or " was " in user_text or " of " in user_text) and not any(neg in user_text for neg in ["weather", "news", "remind", "reminder", "alarm", "task", "stopwatch", "timer"]):
+        import re
+        months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december",
+                  "jan", "feb", "mar", "apr", "aug", "sep", "sept", "oct", "nov", "dec"]
+        months_regex = "|".join(months)
+        
+        pattern = rf"\b(\d{{1,2}})(?:st|nd|rd|th)?\s+({months_regex})(?:\s+(\d{{4}}))?\b|\b({months_regex})\s+(\d{{1,2}})(?:st|nd|rd|th)?(?:\s+(\d{{4}}))?\b"
+        match = re.search(pattern, user_text)
+        if match:
+            groups = match.groups()
+            if groups[0]:
+                day_str, month_str, year_str = groups[0], groups[1], groups[2]
+            else:
+                month_str, day_str, year_str = groups[3], groups[4], groups[5]
+                
+            day = int(day_str)
+            now = datetime.datetime.now()
+            year = int(year_str) if year_str else now.year
+            
+            month = 1
+            for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]):
+                if month_str.startswith(m):
+                    month = i + 1
+                    break
+                    
+            try:
+                target_date = datetime.date(year, month, day)
+                day_name = target_date.strftime("%A")
+                date_formatted = target_date.strftime("%d %B %Y")
+                return f"The day on {date_formatted} is {day_name}."
+            except ValueError:
+                pass
+                
+    elif "date" in user_text and not any(neg in user_text for neg in ["weather", "news", "remind", "reminder", "alarm", "task", "stopwatch", "timer"]):
+        current_date = datetime.datetime.now().strftime("%d %B %Y")
+        return f"Today's date is {current_date}."
+
+    # ==================================================
     # OPEN WEBSITES
+    # ==================================================
+
+    website_response = open_website(user_text)
+
+    if website_response:
+
+        return website_response
+
+    # ==================================================
+    # YOUTUBE SEARCH
+    # ==================================================
+
+    youtube_response = play_youtube(user_text)
+
+    if youtube_response:
+
+        return youtube_response
+
+    # ==================================================
+    # GOOGLE SEARCH
+    # ==================================================
+
+    article_response = open_article(user_text)
+
+    if article_response:
+
+        return article_response
     # ==================================================
 
     website_response = open_website(user_text)
@@ -518,30 +585,10 @@ def process_command(user_text):
         return app_response
 
     # ==================================================
-    # OWNER QUESTIONS
-    # ==================================================
-
-    if "who am i" in user_text:
-
-        return f"Your name is {get_owner_info('name')}."
-
-    elif "birthday" in user_text:
-
-        return f"Your birthday is on {get_owner_info('birthday')}."
-
-    elif "where do i live" in user_text:
-
-        return f"You live in {get_owner_info('city')}."
-
-    elif "who created you" in user_text:
-
-        return f"I was created by {get_owner_info('creator')}."
-
-    # ==================================================
     # VISION
     # ==================================================
 
-    elif (
+    if (
         "what do you see" in user_text
         or "look around" in user_text
     ):
@@ -558,34 +605,12 @@ def process_command(user_text):
             return "I could not detect anything."
 
     # ==================================================
-    # TIME
-    # ==================================================
-
-    elif "time" in user_text:
-        from utils.time_service import format_clock
-
-        current_time = format_clock(with_seconds=False)
-
-        return f"The current time is {current_time}."
-
-    # ==================================================
-    # DATE
-    # ==================================================
-
-    elif "date" in user_text:
-
-        current_date = datetime.datetime.now().strftime("%d %B %Y")
-
-        return f"Today's date is {current_date}."
-
-    # ==================================================
     # SPOTIFY
     # ==================================================
 
     elif "play music" in user_text:
 
         return play_music()
-
     elif "pause music" in user_text:
 
         return pause_music()
