@@ -105,29 +105,41 @@ class DashboardTab(QWidget):
         root.setSpacing(10)
 
         # ═══════════════════════════════════════════════════════════════
-        # ROW 0, COL 0-1 : LOCAL CLOCK + DATE
+        # ROW 0, COL 0-1 : LOCAL CLOCK + DATE + WEATHER WIDGET
         # ═══════════════════════════════════════════════════════════════
         clock_panel = GlassPanel()
-        clock_layout = QVBoxLayout(clock_panel)
+        clock_layout = QHBoxLayout(clock_panel)
         clock_layout.setContentsMargins(20, 14, 20, 14)
-        clock_layout.setSpacing(4)
+        clock_layout.setSpacing(15)
+
+        # Clock Text left side
+        clock_text_layout = QVBoxLayout()
+        clock_text_layout.setContentsMargins(0, 0, 0, 0)
+        clock_text_layout.setSpacing(2)
 
         clock_header = QLabel("SYSTEM TIME")
         clock_header.setFont(QFont("Consolas", 8, QFont.Bold))
         clock_header.setStyleSheet(styles.HEADER_LABEL)
-        clock_layout.addWidget(clock_header)
+        clock_text_layout.addWidget(clock_header)
 
         self.lbl_clock = QLabel("00:00:00 PM")
         self.lbl_clock.setFont(QFont("Consolas", 38, QFont.Bold))
         self.lbl_clock.setStyleSheet(
             f"color: {styles.WHITE}; border: none; background: transparent;"
         )
-        clock_layout.addWidget(self.lbl_clock)
+        clock_text_layout.addWidget(self.lbl_clock)
 
         self.lbl_date = QLabel("Loading...")
         self.lbl_date.setFont(QFont("Consolas", 10, QFont.Bold))
         self.lbl_date.setStyleSheet(styles.HEADER_LABEL)
-        clock_layout.addWidget(self.lbl_date)
+        clock_text_layout.addWidget(self.lbl_date)
+
+        clock_layout.addLayout(clock_text_layout, stretch=1)
+
+        # Compact Delhi Weather right side
+        from gui.weather_widgets import CompactWeatherWidget
+        self.weather_widget = CompactWeatherWidget()
+        clock_layout.addWidget(self.weather_widget, alignment=Qt.AlignRight | Qt.AlignVCenter)
 
         root.addWidget(clock_panel, 0, 0, 1, 2)
 
@@ -170,7 +182,7 @@ class DashboardTab(QWidget):
             self.world_clock_widgets.append(wc)
 
         world_layout.addLayout(wc_grid)
-        root.addWidget(world_panel, 0, 3, 2, 1)
+        root.addWidget(world_panel, 0, 3, 1, 1)  # Collapsed to 1 row!
 
         # ═══════════════════════════════════════════════════════════════
         # ROW 1, COL 0 : FOCUS TIMER (POMODORO) with dial
@@ -214,7 +226,7 @@ class DashboardTab(QWidget):
         root.addWidget(focus_panel, 1, 0, 2, 1)
 
         # ═══════════════════════════════════════════════════════════════
-        # ROW 1, COL 1-2 : ANALYTICS GRID
+        # ROW 1, COL 1-3 : MISSION ANALYTICS (Expanded across columns)
         # ═══════════════════════════════════════════════════════════════
         stats_panel = GlassPanel()
         stats_layout = QVBoxLayout(stats_panel)
@@ -226,43 +238,41 @@ class DashboardTab(QWidget):
         stats_header.setStyleSheet(styles.HEADER_LABEL)
         stats_layout.addWidget(stats_header)
 
-        stats_grid = QGridLayout()
-        stats_grid.setSpacing(8)
+        # Lay cards out horizontally inside expanded stats ribbon
+        stats_hbox = QHBoxLayout()
+        stats_hbox.setSpacing(8)
 
         self.stat_tasks = StatCard("TASKS", styles.AMBER)
         self.stat_reminders = StatCard("REMINDERS", styles.GREEN)
         self.stat_events = StatCard("EVENTS", styles.CYAN)
         self.stat_alarms = StatCard("ALARMS", styles.RED)
 
-        stats_grid.addWidget(self.stat_tasks, 0, 0)
-        stats_grid.addWidget(self.stat_reminders, 0, 1)
-        stats_grid.addWidget(self.stat_events, 1, 0)
-        stats_grid.addWidget(self.stat_alarms, 1, 1)
-        stats_layout.addLayout(stats_grid)
+        stats_hbox.addWidget(self.stat_tasks)
+        stats_hbox.addWidget(self.stat_reminders)
+        stats_hbox.addWidget(self.stat_events)
+        stats_hbox.addWidget(self.stat_alarms)
+        stats_layout.addLayout(stats_hbox)
 
-        root.addWidget(stats_panel, 1, 1, 1, 2)
+        root.addWidget(stats_panel, 1, 1, 1, 3)
 
         # ═══════════════════════════════════════════════════════════════
-        # ROW 2, COL 1-3 : UPCOMING AGENDA
+        # ROW 2, COL 1-3 : DAILY NEWS CAROUSEL (Replaces old upcoming actions)
         # ═══════════════════════════════════════════════════════════════
-        agenda_panel = GlassPanel()
-        agenda_layout = QVBoxLayout(agenda_panel)
-        agenda_layout.setContentsMargins(14, 12, 14, 12)
-        agenda_layout.setSpacing(6)
+        news_panel = GlassPanel()
+        news_layout = QVBoxLayout(news_panel)
+        news_layout.setContentsMargins(14, 12, 14, 12)
+        news_layout.setSpacing(6)
 
-        agenda_header = QLabel("UPCOMING PRIORITY ACTIONS")
-        agenda_header.setFont(QFont("Consolas", 10, QFont.Bold))
-        agenda_header.setStyleSheet(styles.SECTION_LABEL)
-        agenda_layout.addWidget(agenda_header)
+        news_header = QLabel("DAILY WORLD HEADLINES")
+        news_header.setFont(QFont("Consolas", 10, QFont.Bold))
+        news_header.setStyleSheet(styles.SECTION_LABEL)
+        news_layout.addWidget(news_header)
 
-        self.lbl_upcoming = QLabel("Loading agenda protocols...")
-        self.lbl_upcoming.setFont(QFont("Consolas", 10))
-        self.lbl_upcoming.setStyleSheet(styles.BODY_LABEL)
-        self.lbl_upcoming.setWordWrap(True)
-        self.lbl_upcoming.setAlignment(Qt.AlignTop)
-        agenda_layout.addWidget(self.lbl_upcoming, stretch=1)
+        from gui.news_widgets import NewsCarousel
+        self.news_carousel = NewsCarousel()
+        news_layout.addWidget(self.news_carousel, stretch=1)
 
-        root.addWidget(agenda_panel, 2, 1, 1, 3)
+        root.addWidget(news_panel, 2, 1, 1, 3)
 
         # ── Grid stretch ─────────────────────────────────────────────────
         root.setColumnStretch(0, 2)
@@ -377,7 +387,7 @@ class DashboardTab(QWidget):
     _refresh_counter = 0
 
     def refresh_upcoming_and_stats(self, force=False):
-        """Refresh analytics and upcoming agenda from database."""
+        """Refresh analytics from database."""
         # Throttle to every 5 seconds (called every tick) unless forced
         if not force:
             DashboardTab._refresh_counter += 1
@@ -395,59 +405,3 @@ class DashboardTab(QWidget):
         self.stat_reminders.set_value(len(reminders))
         self.stat_events.set_value(len(events))
         self.stat_alarms.set_value(len(alarms))
-
-        now = now_naive()
-        lines = []
-
-        # Next reminder
-        future_rem = [
-            r for r in reminders
-            if datetime.datetime.fromisoformat(r["datetime"]) > now
-        ]
-        if future_rem:
-            r = future_rem[0]
-            dt = datetime.datetime.fromisoformat(r["datetime"])
-            diff = dt - now
-            mins_left = int(diff.total_seconds() // 60)
-            h, m = divmod(mins_left, 60)
-            lines.append(
-                f"⏰  Next reminder: {r['text']} (in {h}h {m}m)"
-            )
-        else:
-            lines.append("⏰  Next reminder: None scheduled")
-
-        # Next event
-        future_ev = [
-            e for e in events
-            if datetime.datetime.fromisoformat(e["start_time"]) > now
-        ]
-        if future_ev:
-            e = future_ev[0]
-            dt = datetime.datetime.fromisoformat(e["start_time"])
-            lines.append(
-                f"📅  Next event: {e['title']} on "
-                f"{dt.strftime('%d %b, %I:%M %p')}"
-            )
-        else:
-            lines.append("📅  Next event: None scheduled")
-
-        # Overdue tasks
-        overdue = []
-        for t in tasks:
-            if t["status"].lower() != "done" and t["due_date"]:
-                due = datetime.datetime.strptime(
-                    t["due_date"], "%Y-%m-%d"
-                ).date()
-                if due < now.date():
-                    overdue.append(t["title"])
-
-        if overdue:
-            lines.append(f"⚠️  Overdue tasks: {len(overdue)}")
-            for title in overdue[:3]:
-                lines.append(f"    • {title}")
-        else:
-            lines.append("✅  No overdue tasks")
-
-        lines.append(f"🎯  Focus sessions today: {self.completed_sessions}")
-
-        self.lbl_upcoming.setText("\n".join(lines))
