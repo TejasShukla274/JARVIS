@@ -5,3 +5,5 @@ pycache/
 *.pyd
 *.pt
 .env
+database/news_cache.json
+database/news_images/

@@ -255,7 +255,10 @@ class NewsCarousel(QFrame):
         # Setup fetch/caching periodic check timer
         self.fetch_timer = QTimer(self)
         self.fetch_timer.timeout.connect(self.run_background_fetch)
-        self.fetch_timer.start(1000 * 60 * 5)  # Every 5 minutes checks cache staleness
+        self.fetch_timer.start(1000 * 60 * 3)  # Every 3 minutes checks cache staleness
+
+        # On startup, immediately fetch if today's cache is missing/stale
+        self.run_background_fetch()
 
     def refresh_articles(self):
         """Loads items from the local news cache immediately."""

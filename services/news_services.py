@@ -151,8 +151,11 @@ def fetch_and_cache_news():
     Downloads news images to disk. Extremely lightweight, no third-party XML engines.
     """
     feeds = [
-        ("BBC News World", "https://feeds.bbci.co.uk/news/world/rss.xml"),
-        ("Al Jazeera World", "https://www.aljazeera.com/xml/rss/all.xml")
+        ("BBC News",       "https://feeds.bbci.co.uk/news/world/rss.xml"),
+        ("Al Jazeera",     "https://www.aljazeera.com/xml/rss/all.xml"),
+        ("Reuters",        "https://feeds.reuters.com/reuters/topNews"),
+        ("Times of India", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms"),
+        ("Google News",    "https://news.google.com/rss?hl=en-IN&gl=IN&ceid=IN:en"),
     ]
     
     parsed_articles = []
@@ -257,14 +260,21 @@ def get_cached_news():
         return []
 
 
-def is_news_cache_expired(max_age_seconds=2700):  # 45 mins
-    """Returns True if the news cache doesn't exist or is older than max_age_seconds."""
+def is_news_cache_expired(max_age_seconds=1800):  # 30 mins
+    """Returns True if the news cache doesn't exist, is from a previous calendar day,
+    or is older than max_age_seconds."""
+    import datetime as _dt
     if not NEWS_CACHE_FILE.exists():
         return True
     try:
         with open(NEWS_CACHE_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
             timestamp = data.get("timestamp", 0)
+            # Always expire if the cache is from a previous calendar day
+            cache_date = _dt.date.fromtimestamp(timestamp)
+            today = _dt.date.today()
+            if cache_date < today:
+                return True
             return (time.time() - timestamp) > max_age_seconds
     except:
         return True

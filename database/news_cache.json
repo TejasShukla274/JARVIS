@@ -1,163 +1,323 @@
 {
-    "timestamp": 1779939100.800282,
+    "timestamp": 1780031152.163241,
     "articles": [
         {
-            "headline": "US strikes Iran targets for second time in three days",
-            "summary": "The hostilities come during a fragile ceasefire between the US and Iran, and protracted negotiations to end the three-mo...",
-            "source": "BBC News World",
-            "time": "28 May 02:58",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\2f8d37bf1b7ba81919fb3759b90ff79e.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/99fb/live/5a9b9af0-5a40-11f1-a295-ab4de21b4525.jpg"
+            "headline": "US and Iran 'very close' to deal but 'not there yet', Vance says",
+            "summary": "US officials earlier told the BBC that the framework of a ceasefire extension deal had been agreed, pending the approval...",
+            "source": "BBC News",
+            "time": "28 May 23:32",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\ebab574d185b3f8fba4941df89c7ba93.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/d0cd/live/13cf4080-5aeb-11f1-b8b0-e75ba6be4215.jpg"
         },
         {
-            "headline": "Israel issues evacuation order for swathes of southern Lebanon",
-            "summary": "The military says areas south of the Zahrani River are now \"combat zones\" as it threatens Hezbollah with fresh strikes.",
-            "source": "BBC News World",
-            "time": "27 May 20:26",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\646a2fb846dc8752671f90bf581fbed9.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/5ca5/live/c0cb97e0-59ef-11f1-8b8c-6d33e1d5abb6.jpg"
+            "headline": "Are US and Iran close to peace or sliding back to war?",
+            "summary": "Neither side seems interested in a return to all-out conflict, despite the latest exchange of strikes.",
+            "source": "BBC News",
+            "time": "28 May 16:56",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\1f8a6e01e6d5f4313dcffd2d15cdbb7f.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/4b47/live/14febc40-5a9d-11f1-8b8c-6d33e1d5abb6.jpg"
         },
         {
-            "headline": "Jill Biden says she thought husband was 'having a stroke' during 2024 debate",
-            "summary": "The former US first lady told CBS News that she was frightened by Joe Biden's performance against Donald Trump.",
-            "source": "BBC News World",
-            "time": "28 May 00:28",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\9f9b84b6810e189ae76123ee149f59af.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/4f04/live/8d909940-5a0b-11f1-8958-3b1169652509.jpg"
+            "headline": "Gaza City hospitals say several killed in strike, as Israel targets Hamas leaders",
+            "summary": "At least five children were reportedly killed in the strike, which appears to have targeted a Hamas commander.",
+            "source": "BBC News",
+            "time": "28 May 16:20",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\fb244aece254dbe222d06a88a32e2d14.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/ac09/live/d65f99a0-5aa1-11f1-9626-f75d5d5577d2.jpg"
         },
         {
-            "headline": "Ebola-hit DR Congo faces 'catastrophic collision' of disease and conflict, WHO warns",
-            "summary": "Tedros Adhanom Ghebreyesus said fighting in DR Congo was hampering efforts to stop spread",
-            "source": "BBC News World",
-            "time": "27 May 18:50",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\52fe4d68a54a742de58343273a87f2d7.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/6c52/live/87bd2cd0-59e9-11f1-b682-cf91850925ea.jpg"
+            "headline": "Learning from Ukraine war, Hezbollah is now using fibre-optic drones to hit Israel",
+            "summary": "Fibre-optic drones are now Hezbollah's primary weapon against Israel's soldiers and civilians.",
+            "source": "BBC News",
+            "time": "28 May 16:39",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\785fd2afcb868e6f4168ffe79f0bf335.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/0c63/live/e5a53b30-5a84-11f1-b721-e3714617440a.jpg"
         },
         {
-            "headline": "Matthew Perry's assistant jailed for 41 months over actor's ketamine death ",
-            "summary": "Kenneth Iwamasa, who pleaded guilty last year to one count of conspiracy to distribute ketamine causing death, said he \"...",
-            "source": "BBC News World",
-            "time": "27 May 20:09",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\6536cd4223a1521ba0dc6fe4d3b65d20.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/fbf2/live/36bdb680-4975-11f1-b9d6-9f6a897bd1ff.jpg"
+            "headline": "Moment Blue Origin rocket explodes during test in Florida",
+            "summary": "A Blue Origin New Glenn rocket exploded on a launch pad at Cape Canaveral in Florida on Thursday night.",
+            "source": "BBC News",
+            "time": "29 May 03:02",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\875cbe4a0f507c64efc0ae4d4dfccfb6.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/8161/live/d4f0e8a0-5b08-11f1-8b8c-6d33e1d5abb6.jpg"
         },
         {
-            "headline": "Five people found alive after week trapped in flooded Laos cave ",
-            "summary": "The search is continuing for a further two villagers who are still missing, rescuers say.",
-            "source": "BBC News World",
-            "time": "27 May 11:52",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\1ebf90a7c4754175fa1c99334a53f0de.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/d95f/live/53325ed0-59c7-11f1-8b8c-6d33e1d5abb6.jpg"
+            "headline": "Italy restores lucky testicles on bull mosaic worn down by tourists ",
+            "summary": "The artwork is the centre of a tradition that involves visitors performing three spins on it for good fortune.",
+            "source": "BBC News",
+            "time": "29 May 02:01",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\77cc83acf4bb14bc78b3a2a39e0d5a20.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/4aed/live/99d62fa0-5afe-11f1-8b8c-6d33e1d5abb6.jpg"
         },
         {
-            "headline": "Israeli strike in Gaza City kills new head of Hamas's military wing",
-            "summary": "Hamas says Mohammed Odeh was killed alongside his wife and two children in a strike on a residential building.",
-            "source": "BBC News World",
-            "time": "27 May 13:15",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\3a9f5486e26316c6d8947599f3252f75.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/8016/live/92d75020-59ab-11f1-8b8c-6d33e1d5abb6.jpg"
+            "headline": "Man jailed for 15 years over plot to attack Taylor Swift concert in Vienna",
+            "summary": "A 21-year-old Austrian man is found guilty of planning the attack and other terrorism-related offences.",
+            "source": "BBC News",
+            "time": "28 May 21:07",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\93b283ecab41afefcdc5e4cc529b6775.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/fc5c/live/b948c050-5ad6-11f1-8b8c-6d33e1d5abb6.jpg"
         },
         {
-            "headline": "Woman caught after 30 years on the run is jailed for armed robberies",
-            "summary": "Klette was finally caught in a flat in Berlin in 2024 and put on trial last year.",
-            "source": "BBC News World",
-            "time": "27 May 12:42",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\7be058a40fa5c10f063fb0931f3939c7.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/8154/live/bc0fd240-59a7-11f1-b088-1bced8e5ea68.jpg"
+            "headline": "Villas, cars and cash: Italy seizes dead Mafia mobster's millions",
+            "summary": "Police say the operation targeted the network of notorious late Sicilian mafia boss Matteo Messina Denaro.",
+            "source": "BBC News",
+            "time": "28 May 14:47",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\0c37c1ccd93d45a2d5db913663e124d7.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/cdae/live/4e668fc0-5a94-11f1-b5ae-83d5964726ad.jpg"
         },
         {
-            "headline": "One killed and nine missing after chemical explosion at US paper mill",
-            "summary": "Nine others were injured and another nine are missing after a tank ruptured at a paper mill in Longview, Washington.",
-            "source": "BBC News World",
-            "time": "27 May 03:02",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\cadd07e30b6fe87208cc568160d48871.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/ab3a/live/0001e450-5991-11f1-85d8-a5c7983b8496.jpg"
+            "headline": "Portugal breaks hottest May day record as Europe swelters in heatwave",
+            "summary": "French students are taking their exams in baking schools, while red alerts are issued in Italy.",
+            "source": "BBC News",
+            "time": "28 May 23:36",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\b80e6639d1c7d8cc9f568cae527f6884.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/e6bd/live/11b1bcb0-5ab4-11f1-89a3-d1f559421220.jpg"
         },
         {
-            "headline": "Hotel that refused to give tourist tap water acted lawfully, Italian court rules",
-            "summary": "The Italian Supreme Court rejected a tourist's claim that her consumer rights were breached when she was only offered \u20ac7...",
-            "source": "BBC News World",
-            "time": "27 May 12:25",
-            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\2a08b6211ec7f7057aa6fafaabc517e9.jpg",
-            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/246c/live/50c1b420-599f-11f1-89a3-d1f559421220.jpg"
+            "headline": "Israel hits Lebanese capital in 'targeted strike'",
+            "summary": "Beirut had until now largely been spared even as both Israel and Hezbollah accused each other of breaking last month's c...",
+            "source": "BBC News",
+            "time": "28 May 17:39",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\c5f803152be8239e90735caa2ae05222.jpg",
+            "original_thumb_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/2412/live/e8e37ed0-5a9b-11f1-9626-f75d5d5577d2.jpg"
         },
         {
-            "headline": "Google employee charged with insider trading over Polymarket bets",
-            "summary": "Michele Spagnuolo allegedly used insider information to profit from bets on people on Google&#039;s most-searched list.",
-            "source": "Al Jazeera World",
-            "time": "28 May 02:25",
+            "headline": "Colombia\u2019s voters will decide between \u2018two visions for the country\u2019",
+            "summary": "Al Jazeera\u2019s Teresa Bo reports from Bogota.",
+            "source": "Al Jazeera",
+            "time": "29 May 04:47",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Aid cuts and climate change drive deadly malaria surge in Zimbabwe",
-            "summary": "A surge in malaria cases in Zimbabwe is exposing fragile health systems and growing treatment shortages in rural areas.",
-            "source": "Al Jazeera World",
-            "time": "28 May 02:18",
+            "headline": "At least three dead after fire destroys Dallas apartment complex",
+            "summary": "A large fire destroyed an apartment complex in Dallas after crews responded to reports of a gas leak.",
+            "source": "Al Jazeera",
+            "time": "29 May 03:53",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Parisians defy swimming ban to cool off as record heat hits Europe",
-            "summary": "Parisians cooled off in the city\u2019s Saint-Martin canal as an unprecedented heatwave pushed temperatures across Europe.",
-            "source": "Al Jazeera World",
-            "time": "28 May 01:51",
+            "headline": "Blue Origin\u2019s New Glenn rocket explodes on launchpad in Florida",
+            "summary": "The incident is the latest setback for Jeff Bezos\u2019s space venture as it seeks to narrow the gap with Elon Musk\u2019s SpaceX.",
+            "source": "Al Jazeera",
+            "time": "29 May 03:52",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Uganda closes border with DRC in an effort to contain Ebola outbreak",
-            "summary": "Uganda has closed its border with neighbouring DR Congo for four weeks in an effort to contain an Ebola outbreak.",
-            "source": "Al Jazeera World",
-            "time": "28 May 00:15",
+            "headline": "Lebanon Latest: Mass evacuations as Israel expands attacks",
+            "summary": "Al Jazeera\u2019s Obaida Hitto brings you the latest from southern Lebanon amidst increasing Israeli attacks.",
+            "source": "Al Jazeera",
+            "time": "29 May 03:18",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "US returns Palestinian rights expert Francesca Albanese to sanctions list",
-            "summary": "Trump administration has sought to pressure international officials who scrutinise reported abuses by Israeli forces.",
-            "source": "Al Jazeera World",
-            "time": "28 May 00:03",
+            "headline": "Anthropic soars to $965bn valuation, leapfrogging OpenAI",
+            "summary": "Claude maker raises $65bn from investors ahead of expected initial public offering.",
+            "source": "Al Jazeera",
+            "time": "29 May 03:16",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Iran war live: US strikes Iranian site; Kuwait targeted by missiles, drones",
-            "summary": "Kuwait&#039;s military says air defences are battling &#039;hostile&#039; missiles and drones, as alarms sound across th...",
-            "source": "Al Jazeera World",
-            "time": "28 May 00:00",
+            "headline": "US Treasury secretary confirms plans for banknote featuring Trump\u2019s face",
+            "summary": "Proposed $250 bill would mark the first time a living person has appeared on US currency in more than a century.",
+            "source": "Al Jazeera",
+            "time": "29 May 02:13",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Jill Biden worried husband Joe was \u2018having a stroke\u2019 during 2024 US debate",
-            "summary": "The former US first lady said she had never seen former President Joe Biden act the way he did on the 2024 debate stage.",
-            "source": "Al Jazeera World",
-            "time": "27 May 23:33",
+            "headline": "US to designate two Brazilian gangs as \u2018terrorist\u2019 organisations",
+            "summary": "Trump administration has used crime and drug trafficking to push for greater US military influence across Latin America.",
+            "source": "Al Jazeera",
+            "time": "29 May 00:12",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Bolivia\u2019s president warns \u2018time is running out\u2019 amid protest crisis",
-            "summary": "Bolivia\u2019s president has warned protesters \u201ctime is running out\u201d amid a weeks-long standoff.",
-            "source": "Al Jazeera World",
-            "time": "27 May 23:24",
+            "headline": "Iran war live: Tehran, Trump yet to comment on 60-day truce extension plan",
+            "summary": "Lebanese PM Nawaf Salam says &#039;nothing can justify&#039; Israel&#039;s military onslaught against &#039;peaceful peo...",
+            "source": "Al Jazeera",
+            "time": "29 May 00:00",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Markets rally amid hopes of US-Iran deal",
-            "summary": "Markets betting a deal will reopen the Strait of Hormuz and soothe the deep global economic uncertainty.",
-            "source": "Al Jazeera World",
-            "time": "27 May 21:14",
+            "headline": "Netanyahu orders Israeli army to seize 70 percent of Gaza",
+            "summary": "Israeli Prime Minister Benjamin Netanyahu says he has ordered the military to take control of 70 percent of Gaza.",
+            "source": "Al Jazeera",
+            "time": "28 May 23:48",
             "thumbnail": "",
             "original_thumb_url": ""
         },
         {
-            "headline": "Former assistant to TV star Matthew Perry sentenced to 41 months in prison",
-            "summary": "Sentencing of Kenneth Iwamasa concludes prosecution of five people in connection with Perry&#039;s death from drug ketam...",
-            "source": "Al Jazeera World",
-            "time": "27 May 20:57",
+            "headline": "Iran ambassador hits out at \u2018country to the north\u2019 in US World Cup visa row",
+            "summary": "Iran&#039;s football team still lacks US visas and is not competing on &#039;equal terms&#039;, Tehran&#039;s envoy to M...",
+            "source": "Al Jazeera",
+            "time": "28 May 23:18",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Karnataka 'nataka' not over yet? Siddaramaiah, Shivakumar in Delhi as Congress weighs next moves",
+            "summary": "A day after annoucing that he would step down as chief miniter to pave way for Shivakumar in accordance with the rotatio...",
+            "source": "Times of India",
+            "time": "29 May 09:27",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\66b4464166537ef700056ad9535cd7cc.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131381769,imgsize-64470.cms"
+        },
+        {
+            "headline": "Watch: Blue Origin\u2019s New Glenn rocket explodes in a massive fireball while undergoing a test ",
+            "summary": "In a dramatic turn of events, Blue Origin's New Glenn rocket was engulfed in flames during a launch pad catastrophe at C...",
+            "source": "Times of India",
+            "time": "29 May 08:30",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\7906ccee27b7a592b781f2d8369cb140.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131382095,imgsize-16444514.cms"
+        },
+        {
+            "headline": "Air India plane that stayed airborne for 9hrs was under repair for 6 years",
+            "summary": "An Air India flight to San Francisco returned to Delhi after nine hours due to a malfunctioning Traffic Collision Avoida...",
+            "source": "Times of India",
+            "time": "29 May 00:54",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\349054de5db49b93dfcb5ed79134965f.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131380087,imgsize-127192.cms"
+        },
+        {
+            "headline": "Back in Tajpur, Sooryavanshi remains the kid who never forgives or forgets",
+            "summary": "While the cricket world marvelled at Vaibhav Sooryavanshi\u2019s breathtaking 29-ball 97 in the IPL Eliminator, people in his...",
+            "source": "Times of India",
+            "time": "29 May 07:00",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\1a84a3cec70c192c58d7a6e3f25214e6.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131376899,imgsize-110296.cms"
+        },
+        {
+            "headline": "Google CEO admits company trailing behind Anthropic, OpenAI in AI coding agents",
+            "summary": "Google's CEO Sundar Pichai acknowledges a current lag in AI coding agents. He states competitors like Anthropic lead in ...",
+            "source": "Times of India",
+            "time": "28 May 19:54",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\42325247991915ed71301e0ac9cfccb1.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131372472,imgsize-17670.cms"
+        },
+        {
+            "headline": "Jasprit Bumrah over Hardik Pandya? Fans pick MI captain for IPL 2027",
+            "summary": "Following a dismal IPL 2026, Mumbai Indians face intense captaincy speculation. Fans overwhelmingly favor pace spearhead...",
+            "source": "Times of India",
+            "time": "29 May 09:39",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\89295f03d3ebec35f98a6156ec3077b1.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131381674,imgsize-40404.cms"
+        },
+        {
+            "headline": "Burnt Scorpio, diesel traces: Ex-Congress sarpanch family\u2019s quadruple murder shocks Rajasthan",
+            "summary": "A charred SUV found with four bodies in Ajmer district has shifted focus from accident to suspected murder. Police disco...",
+            "source": "Times of India",
+            "time": "29 May 01:40",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\d1a9fe0b80917f538c311da96dbbac26.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131381790,imgsize-43898.cms"
+        },
+        {
+            "headline": "'Crazy love': Netanyahu cites India's support even as world 'delegitimises' Israel",
+            "summary": "Israeli Prime Minister Benjamin Netanyahu expressed gratitude for India's \"crazy love\" and unwavering support, highlight...",
+            "source": "Times of India",
+            "time": "29 May 08:49",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\26c6cd9e379da99015e554c972d03a44.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131381060,imgsize-603032.cms"
+        },
+        {
+            "headline": "Four lines that 'layoff email' from Meta Leadership has for those on H-1B visa",
+            "summary": "Meta has initiated another round of significant layoffs, impacting nearly 8,000 employees globally, with notifications s...",
+            "source": "Times of India",
+            "time": "28 May 09:24",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\e7d18914198fd9b594b35ad5aaac27f8.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131362621,imgsize-11176.cms"
+        },
+        {
+            "headline": "IPL\u2019s explosive media rights growth unmatched in global sport: Dhumal",
+            "summary": "IPL governing council chairman Arun Dhumal said the league\u2019s media rights growth is unmatched in global sport, highlight...",
+            "source": "Times of India",
+            "time": "29 May 08:00",
+            "thumbnail": "C:\\Users\\tejas\\OneDrive\\Desktop\\JARVIS\\database\\news_images\\82f4598940a94e83894edcd174e28231.jpg",
+            "original_thumb_url": "https://static.toiimg.com/photo/msid-131377133,imgsize-52322.cms"
+        },
+        {
+            "headline": "Iran-Israel war LIVE: U.S.-Iran truce deal awaits Trump as strikes test ceasefire - The Hindu",
+            "summary": "Iran-Israel war LIVE: U.S.-Iran truce deal awaits Trump as strikes test ceasefire&nbsp;&nbsp;The HinduLive updates: Tent...",
+            "source": "Google News",
+            "time": "29 May 03:20",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Karnataka Politics Live Updates: Siddaramaiah, Son In Delhi For \"Courtesy Meet\" With Rahul Gandhi - NDTV",
+            "summary": "Karnataka Politics Live Updates: Siddaramaiah, Son In Delhi For \"Courtesy Meet\" With Rahul Gandhi&nbsp;&nbsp;NDTVKarnata...",
+            "source": "Google News",
+            "time": "29 May 04:48",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Education Minister Dharmendra Pradhan takes responsibility for CBSE answer sheet discrepancies - The Hindu",
+            "summary": "Education Minister Dharmendra Pradhan takes responsibility for CBSE answer sheet discrepancies&nbsp;&nbsp;The HinduCBSE ...",
+            "source": "Google News",
+            "time": "28 May 07:42",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Twisha Sharma Dowry Death Case | MP High Court Quashes Anticipatory Bail Granted To Mother-In-Law... - Live Law",
+            "summary": "Twisha Sharma Dowry Death Case | MP High Court Quashes Anticipatory Bail Granted To Mother-In-Law...&nbsp;&nbsp;Live Law...",
+            "source": "Google News",
+            "time": "27 May 20:04",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "US military downs 4 Iranian drones, strikes ground control station in fresh attack - Telegraph India",
+            "summary": "US military downs 4 Iranian drones, strikes ground control station in fresh attack&nbsp;&nbsp;Telegraph IndiaIran War LI...",
+            "source": "Google News",
+            "time": "28 May 02:33",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Heavy rain, thunderstorm in Delhi, parts of NCR, bring respite from intense heat | India News - Hindustan Times",
+            "summary": "Heavy rain, thunderstorm in Delhi, parts of NCR, bring respite from intense heat | India News&nbsp;&nbsp;Hindustan Times...",
+            "source": "Google News",
+            "time": "28 May 11:57",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Indian Air Force likely to oversee transport of NEET-UG re-test papers - The Hindu",
+            "summary": "Indian Air Force likely to oversee transport of NEET-UG re-test papers&nbsp;&nbsp;The HinduUnion Education Minister, Shr...",
+            "source": "Google News",
+            "time": "28 May 15:56",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Gujarat student stabbed to death in Canada; family informed after 12 days - The Times of India",
+            "summary": "Gujarat student stabbed to death in Canada; family informed after 12 days&nbsp;&nbsp;The Times of IndiaA 'Drug Dealer', ...",
+            "source": "Google News",
+            "time": "28 May 10:03",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "Right to trauma care part of right to life: Supreme Court issues directions for uniform road accident trauma care - Bar and Bench",
+            "summary": "Right to trauma care part of right to life: Supreme Court issues directions for uniform road accident trauma care&nbsp;&...",
+            "source": "Google News",
+            "time": "28 May 05:22",
+            "thumbnail": "",
+            "original_thumb_url": ""
+        },
+        {
+            "headline": "No legal action if infiltrators go back on their own: Amit Shah - The Hindu",
+            "summary": "No legal action if infiltrators go back on their own: Amit Shah&nbsp;&nbsp;The HinduBengal Gave 600 Hectares Land To BSF...",
+            "source": "Google News",
+            "time": "28 May 16:45",
             "thumbnail": "",
             "original_thumb_url": ""
         }
