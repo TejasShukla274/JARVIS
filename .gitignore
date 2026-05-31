@@ -1,9 +1,32 @@
 venv/
-pycache/
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
 *.pt
+
+# Secrets — never commit
 .env
+
+# Database files with personal data
 database/news_cache.json
 database/news_images/
+database/*.db
+
+# Memory files with personal data
+memory/memory.json
+memory/map_cache.json
+memory/route_cache.json
+
+# Backups (may contain old personal data)
+backups/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS junk
+Thumbs.db
+.DS_Store

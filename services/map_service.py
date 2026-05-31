@@ -387,7 +387,7 @@ def zoom_map(direction):
     ensure_map_server()
 
     params = current_view_params.copy() or {
-        "q": "Ayodhya",
+        "q": "world",
         "mode": "2d"
     }
     params["zoom"] = direction

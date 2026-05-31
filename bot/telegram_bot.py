@@ -18,7 +18,7 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") #used to get the bot token
                                             #BLOCK 3
 
 async def start_command(update: Update,context:ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello Tejas JARVIS is now online")
+    await update.message.reply_text("Hello! JARVIS is now online.")
  
  #async def used to define function 
  #start_command is used to start the bot

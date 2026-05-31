@@ -51,7 +51,7 @@ def run_voice_jarvis():
             continue
 
         if "stop jarvis" in command.lower() or "goodbye" in command.lower():
-            speak("Voice mode shutting down. Goodbye Tejas.")
+            speak("Voice mode shutting down. Goodbye.")
             break
 
         try:

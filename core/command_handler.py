@@ -4,6 +4,7 @@ import re
 
 from memory.owner_profile import get_owner_info
 from brain.ai_engine import ask_jarvis
+from core.memory_handler import handle_memory_command
 
 from music.spotify_controller import (
     play_music,
@@ -450,24 +451,40 @@ def process_command(user_text):
             return open_map(place, map_mode)
 
     # ==================================================
+    # MEMORY SYSTEM (MySQL-backed)
+    # ==================================================
+
+    memory_response = handle_memory_command(user_text)
+    if memory_response:
+        return memory_response
+
+    # ==================================================
     # TIME / DATE / OWNER QUESTIONS (LOCAL OFFLINE)
     # ==================================================
 
     if "who am i" in user_text:
-
-        return f"Your name is {get_owner_info('name')}."
+        name = get_owner_info('name')
+        if "don't have" in name:
+            return "I don't know your name yet. You can say 'My name is ...' to tell me."
+        return f"Your name is {name}."
 
     elif "birthday" in user_text:
-
-        return f"Your birthday is on {get_owner_info('birthday')}."
+        birthday = get_owner_info('birthday')
+        if "don't have" in birthday:
+            return "I don't know your birthday yet. You can say 'My birthday is ...' to tell me."
+        return f"Your birthday is on {birthday}."
 
     elif "where do i live" in user_text:
-
-        return f"You live in {get_owner_info('city')}."
+        city = get_owner_info('city')
+        if "don't have" in city:
+            return "I don't know where you live yet. You can say 'I live in ...' to tell me."
+        return f"You live in {city}."
 
     elif "who created you" in user_text:
-
-        return f"I was created by {get_owner_info('creator')}."
+        creator = get_owner_info('creator')
+        if "don't have" in creator:
+            return "I was created by my developer. You can tell me who that is."
+        return f"I was created by {creator}."
 
     elif "time" in user_text:
         from utils.time_service import format_clock

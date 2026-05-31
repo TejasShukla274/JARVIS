@@ -13,7 +13,7 @@ from gui import styles
 from services.weather_service import get_cached_weather, fetch_and_cache_weather, is_weather_cache_expired
 
 # ── ✏️  CHANGE THIS to any city you want ─────────────────────────────────────
-WEATHER_CITY = "Ayodhya"
+WEATHER_CITY = "Delhi"
 # ─────────────────────────────────────────────────────────────────────────────
 
 

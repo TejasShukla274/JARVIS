@@ -18,9 +18,25 @@ client = genai.Client(
 )
 
 
+def _get_owner_name():
+    """Fetch the owner's name from the memory system, if available."""
+    try:
+        from memory.owner_profile import get_owner_info
+        name = get_owner_info("name")
+        # Check if it's the fallback "I don't have that information" message
+        if name and "don't have" not in name:
+            return name
+    except Exception:
+        pass
+    return None
+
+
 def ask_jarvis(prompt):
 
     user_input = prompt.lower().strip()
+
+    owner_name = _get_owner_name()
+    greeting_name = f" {owner_name}" if owner_name else ""
 
     # --------------------------------
     # SIMPLE OFFLINE RESPONSES
@@ -32,7 +48,7 @@ def ask_jarvis(prompt):
     ):
 
         return (
-            "Greetings Tejas, "
+            f"Greetings{greeting_name}, "
             "how may I assist you?"
         )
 
@@ -40,7 +56,7 @@ def ask_jarvis(prompt):
 
         return (
             "Operating at full "
-            "efficiency, Tejas."
+            f"efficiency{greeting_name}."
         )
 
     elif (
@@ -60,14 +76,14 @@ def ask_jarvis(prompt):
     elif "good morning" in user_input:
 
         return (
-            "Good morning Tejas. "
+            f"Good morning{greeting_name}. "
             "Ready when you are."
         )
 
     elif "good night" in user_input:
 
         return (
-            "Good night Tejas. "
+            f"Good night{greeting_name}. "
             "Entering low power mode."
         )
 
@@ -81,6 +97,27 @@ def ask_jarvis(prompt):
 
     try:
 
+        # Build a dynamic system instruction that includes known user info
+        system_parts = [
+            "You are JARVIS, a personal futuristic AI assistant.",
+            "",
+            "Rules:",
+            "- Never say you are Gemini.",
+            "- Never say you are Google AI.",
+            "- Your name is only JARVIS.",
+            "- Speak intelligently and confidently.",
+            "- Keep responses practical.",
+            "- Speak like a premium AI assistant.",
+            "- Short responses for casual questions.",
+            "- Detailed responses only when needed.",
+            "- Avoid overly robotic replies.",
+        ]
+
+        if owner_name:
+            system_parts.insert(1, f"Your owner's name is {owner_name}.")
+
+        system_instruction = "\n".join(system_parts)
+
         response = client.models.generate_content(
 
             model="gemini-2.5-flash",
@@ -88,21 +125,7 @@ def ask_jarvis(prompt):
             contents=prompt,
 
             config=types.GenerateContentConfig(
-
-                system_instruction="""
-You are JARVIS, Tejas's personal futuristic AI assistant.
-
-Rules:
-- Never say you are Gemini.
-- Never say you are Google AI.
-- Your name is only JARVIS.
-- Speak intelligently and confidently.
-- Keep responses practical.
-- Speak like a premium AI assistant.
-- Short responses for casual questions.
-- Detailed responses only when needed.
-- Avoid overly robotic replies.
-"""
+                system_instruction=system_instruction
             )
         )
 
