@@ -1,6 +1,5 @@
 # voice/voice_output.py
 
-import subprocess
 import threading
 
 from gui.gui_state import set_state
@@ -9,14 +8,13 @@ from gui.gui_state import set_state
 # speaking state
 is_speaking = False
 
-# current process
-current_process = None
+# lock to serialize pyttsx3 calls (it is not thread-safe)
+_tts_lock = threading.Lock()
 
 
 def speak(text):
 
     global is_speaking
-    global current_process
 
     if not text:
         return
@@ -24,7 +22,6 @@ def speak(text):
     def run():
 
         global is_speaking
-        global current_process
 
         try:
 
@@ -34,26 +31,16 @@ def speak(text):
 
             print("SPEAKING:", text)
 
-            # Windows native TTS
-            command = f'''
-Add-Type -AssemblyName System.Speech;
-$speak = New-Object System.Speech.Synthesis.SpeechSynthesizer;
-$speak.Rate = 1;
-$speak.Volume = 100;
-$speak.Speak("{text}");
-'''
+            # Cross-platform TTS using pyttsx3
+            # Works on Windows (SAPI5), macOS (NSSpeechSynthesizer), Linux (espeak)
+            import pyttsx3
 
-            current_process = subprocess.Popen(
-                [
-                    "powershell",
-                    "-Command",
-                    command
-                ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
-            )
-
-            current_process.wait()
+            with _tts_lock:
+                engine = pyttsx3.init()
+                engine.setProperty('rate', 170)
+                engine.setProperty('volume', 1.0)
+                engine.say(text)
+                engine.runAndWait()
 
         except Exception as e:
 
@@ -73,18 +60,11 @@ $speak.Speak("{text}");
 
 def stop_speaking():
 
-    global current_process
     global is_speaking
 
-    try:
-
-        if current_process:
-
-            current_process.terminate()
-
-    except:
-        pass
-
+    # pyttsx3 doesn't expose a subprocess to kill,
+    # but setting is_speaking = False lets the listener
+    # resume immediately after the current utterance finishes.
     is_speaking = False
 
     set_state("idle")

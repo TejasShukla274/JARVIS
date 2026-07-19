@@ -1,16 +1,14 @@
-# gui/clock_widgets.py
-# ─────────────────────────────────────────────────────────────────────────────
-# Reusable animated circular widgets for JARVIS dashboard.
-# ─────────────────────────────────────────────────────────────────────────────
-
+from datetime import datetime
 import math
+import sys
 
-from PyQt5.QtCore import Qt, QElapsedTimer, QPointF, QTimer, QRectF
-from PyQt5.QtGui import (
-    QColor, QFont, QPainter, QPainterPath, QPen, QRadialGradient,
-    QConicalGradient, QLinearGradient
-)
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import Qt, QTimer, QElapsedTimer, QPointF, QRectF
+from PyQt5.QtGui import QFont, QPainter, QPainterPath, QPen, QColor, QRadialGradient
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QWidget, QFrame, QLabel
+
+
+def clamp(value, low=0.0, high=1.0):
+    return max(low, min(high, value))
 
 
 def clamp(value, low=0.0, high=1.0):
@@ -18,312 +16,462 @@ def clamp(value, low=0.0, high=1.0):
 
 
 class FuturisticDial(QWidget):
-    """
-    Reusable animated circular dial for stopwatch and countdown surfaces.
-    Features:
-      - Outer neon glow ring
-      - Inner glassmorphism background
-      - Tick marks with neon colouring
-      - Smooth progress arc
-      - Optional ticking hand
-      - Pulsing centre dot
-      - Centre text and sub-text
-    """
+    """Reusable animated circular dial for stopwatch and countdown surfaces."""
 
     def __init__(self, accent=QColor("#00e5ff"), parent=None):
         super().__init__(parent)
+
         self.accent = QColor(accent)
+
         self.progress = 0.0
         self.sweep = 0.0
         self.hand_ratio = 0.0
+
         self.center_text = "00:00:00"
         self.sub_text = ""
+
         self.show_hand = True
-        self.setMinimumSize(200, 200)
-        self.setAttribute(Qt.WA_OpaquePaintEvent, False)
+
+        self.setMinimumSize(320, 320)
 
         self._elapsed = QElapsedTimer()
         self._elapsed.start()
+
+        # ANIMATION TIMER
         self._animation_timer = QTimer(self)
         self._animation_timer.timeout.connect(self._animate)
         self._animation_timer.start(16)
 
-    def set_values(self, progress=None, hand_ratio=None,
-                   center_text=None, sub_text=None):
+    def set_values(
+        self,
+        progress=None,
+        hand_ratio=None,
+        center_text=None,
+        sub_text=None,
+    ):
         if progress is not None:
             self.progress = clamp(float(progress))
+
         if hand_ratio is not None:
             self.hand_ratio = float(hand_ratio) % 1.0
+
         if center_text is not None:
             self.center_text = center_text
+
         if sub_text is not None:
             self.sub_text = sub_text
+
         self.update()
 
     def _animate(self):
-        self.sweep = (self.sweep + 0.6) % 360
+        self.sweep = (self.sweep + 0.75) % 360
         self.update()
 
     def paintEvent(self, event):
         painter = QPainter(self)
+
         painter.setRenderHint(QPainter.Antialiasing)
 
         side = min(self.width(), self.height())
+
         cx = self.width() / 2
         cy = self.height() / 2
-        radius = side / 2 - 22
 
-        # ── Outer glow background ────────────────────────────────────────
-        glow = QRadialGradient(QPointF(cx, cy), radius + 30)
-        glow.setColorAt(0.0, QColor(self.accent.red(), self.accent.green(),
-                                     self.accent.blue(), 12))
-        glow.setColorAt(0.7, QColor(self.accent.red(), self.accent.green(),
-                                     self.accent.blue(), 6))
-        glow.setColorAt(1.0, QColor(0, 0, 0, 0))
+        radius = side / 2 - 18
+
+        rect = (
+            int(cx - radius),
+            int(cy - radius),
+            int(radius * 2),
+            int(radius * 2),
+        )
+
+        # BACKGROUND
         painter.setPen(Qt.NoPen)
-        painter.setBrush(glow)
-        painter.drawEllipse(QPointF(cx, cy), radius + 28, radius + 28)
+        painter.setBrush(QColor(4, 12, 18, 220))
+        painter.drawEllipse(QPointF(cx, cy), radius + 8, radius + 8)
 
-        # ── Dark glass circle fill ───────────────────────────────────────
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(QColor(4, 10, 18, 215))
-        painter.drawEllipse(QPointF(cx, cy), radius + 6, radius + 6)
-
-        # ── Multiple neon ring layers for glow effect ────────────────────
-        for blur, alpha in ((16, 18), (10, 40), (5, 75), (2, 140)):
-            pen = QPen(QColor(self.accent.red(), self.accent.green(),
-                              self.accent.blue(), alpha), blur)
+        # OUTER GLOW
+        for blur, alpha in ((14, 30), (8, 55), (4, 110)):
+            pen = QPen(
+                QColor(
+                    self.accent.red(),
+                    self.accent.green(),
+                    self.accent.blue(),
+                    alpha,
+                ),
+                blur,
+            )
             pen.setCapStyle(Qt.RoundCap)
+
             painter.setPen(pen)
             painter.drawEllipse(QPointF(cx, cy), radius, radius)
 
-        # ── Inner decorative ring ────────────────────────────────────────
-        painter.setPen(QPen(QColor(30, 75, 95, 130), 1))
-        painter.drawEllipse(QPointF(cx, cy), radius - 20, radius - 20)
+        # INNER CIRCLE
+        painter.setPen(QPen(QColor(36, 82, 100, 170), 1))
+        painter.drawEllipse(QPointF(cx, cy), radius - 18, radius - 18)
 
-        # ── Tick marks ───────────────────────────────────────────────────
+        # TICKS
         for idx in range(60):
             angle = math.radians(idx * 6 - 90)
-            is_major = idx % 5 == 0
-            outer = radius - 3
-            inner = radius - (18 if is_major else 10)
 
-            p1 = QPointF(cx + math.cos(angle) * inner,
-                         cy + math.sin(angle) * inner)
-            p2 = QPointF(cx + math.cos(angle) * outer,
-                         cy + math.sin(angle) * outer)
+            outer = radius - 4
+            inner = radius - (16 if idx % 5 == 0 else 9)
 
-            if is_major:
-                painter.setPen(QPen(QColor(150, 230, 255, 210), 2.5))
-            else:
-                painter.setPen(QPen(QColor(80, 180, 220, 70), 1))
+            p1 = QPointF(
+                cx + math.cos(angle) * inner,
+                cy + math.sin(angle) * inner,
+            )
+
+            p2 = QPointF(
+                cx + math.cos(angle) * outer,
+                cy + math.sin(angle) * outer,
+            )
+
+            painter.setPen(
+                QPen(
+                    QColor(
+                        155,
+                        230,
+                        255,
+                        190 if idx % 5 == 0 else 80,
+                    ),
+                    2 if idx % 5 == 0 else 1,
+                )
+            )
+
             painter.drawLine(p1, p2)
 
-        # ── Decorative rotating inner lines ──────────────────────────────
-        painter.setPen(QPen(QColor(self.accent.red(), self.accent.green(),
-                                   self.accent.blue(), 30), 1))
+        # SWEEP LINES
+        painter.setPen(
+            QPen(
+                QColor(
+                    self.accent.red(),
+                    self.accent.green(),
+                    self.accent.blue(),
+                    75,
+                ),
+                1,
+            )
+        )
+
         for angle_deg in range(0, 360, 30):
-            angle = math.radians(angle_deg - 90 + self.sweep * 0.04)
-            end = QPointF(cx + math.cos(angle) * (radius - 30),
-                          cy + math.sin(angle) * (radius - 30))
+            angle = math.radians(angle_deg - 90 + self.sweep * 0.05)
+
+            end = QPointF(
+                cx + math.cos(angle) * (radius - 28),
+                cy + math.sin(angle) * (radius - 28),
+            )
+
             painter.drawLine(QPointF(cx, cy), end)
 
-        # ── Progress arc ─────────────────────────────────────────────────
-        rect = QRectF(cx - radius, cy - radius, radius * 2, radius * 2)
-
-        # Glow behind progress arc
-        glow_pen = QPen(QColor(self.accent.red(), self.accent.green(),
-                               self.accent.blue(), 50), 12)
-        glow_pen.setCapStyle(Qt.RoundCap)
-        painter.setPen(glow_pen)
-        painter.drawArc(rect, 90 * 16, int(-360 * self.progress * 16))
-
-        # Main progress arc
-        progress_pen = QPen(self.accent, 5)
+        # PROGRESS ARC
+        progress_pen = QPen(self.accent, 6)
         progress_pen.setCapStyle(Qt.RoundCap)
-        painter.setPen(progress_pen)
-        painter.drawArc(rect, 90 * 16, int(-360 * self.progress * 16))
 
-        # ── Hand ─────────────────────────────────────────────────────────
+        painter.setPen(progress_pen)
+
+        painter.drawArc(
+            *rect,
+            90 * 16,
+            int(-360 * self.progress * 16),
+        )
+
+        # CLOCK HAND
         if self.show_hand:
             angle = math.radians(self.hand_ratio * 360 - 90)
-            hand_len = radius - 35
-            hand_end = QPointF(cx + math.cos(angle) * hand_len,
-                               cy + math.sin(angle) * hand_len)
 
-            # Hand glow
-            painter.setPen(QPen(QColor(255, 255, 255, 40), 4))
-            painter.drawLine(QPointF(cx, cy), hand_end)
-            # Main hand
+            hand_end = QPointF(
+                cx + math.cos(angle) * (radius - 35),
+                cy + math.sin(angle) * (radius - 35),
+            )
+
             painter.setPen(QPen(QColor("#ffffff"), 2))
             painter.drawLine(QPointF(cx, cy), hand_end)
 
-            # Centre dot — pulsing
-            pulse = 0.6 + 0.4 * math.sin(self.sweep * 0.05)
-            painter.setBrush(QColor(self.accent.red(), self.accent.green(),
-                                    self.accent.blue(),
-                                    int(180 * pulse)))
-            painter.setPen(Qt.NoPen)
-            painter.drawEllipse(QPointF(cx, cy), 6, 6)
-            # Tip dot
             painter.setBrush(self.accent)
+            painter.setPen(Qt.NoPen)
+
+            painter.drawEllipse(QPointF(cx, cy), 5, 5)
             painter.drawEllipse(hand_end, 4, 4)
 
-        # ── Centre text ──────────────────────────────────────────────────
+        # MAIN TIME TEXT
         painter.setPen(QColor("#eafaff"))
-        text_size = max(14, int(side * 0.072))
-        painter.setFont(QFont("Consolas", text_size, QFont.Bold))
-        painter.drawText(self.rect(), Qt.AlignCenter, self.center_text)
 
-        # ── Sub text ─────────────────────────────────────────────────────
+        painter.setFont(
+            QFont(
+                "Consolas",
+                max(16, int(side * 0.075)),
+                QFont.Bold,
+            )
+        )
+
+        painter.drawText(
+            self.rect(),
+            Qt.AlignCenter,
+            self.center_text,
+        )
+
+        # SUB TEXT
         if self.sub_text:
             painter.setPen(QColor(130, 230, 255, 180))
-            sub_size = max(8, int(side * 0.032))
-            painter.setFont(QFont("Consolas", sub_size, QFont.Bold))
-            painter.drawText(0, int(cy + side * 0.14), self.width(), 28,
-                             Qt.AlignCenter, self.sub_text)
+
+            painter.setFont(
+                QFont(
+                    "Consolas",
+                    max(8, int(side * 0.035)),
+                    QFont.Bold,
+                )
+            )
+
+            painter.drawText(
+                0,
+                int(cy + side * 0.13),
+                self.width(),
+                28,
+                Qt.AlignCenter,
+                self.sub_text,
+            )
+
+
+
+
+
+# -------------------------------------------------
+# JARVIS CORE GLYPH (ANIMATED HUD ORB)
+# -------------------------------------------------
 
 
 class JarvisCoreGlyph(QWidget):
-    """Animated JARVIS core orb used by the dashboard."""
+    """
+    Animated HUD Core Orb for JARVIS.
+    Responds dynamically to voice assistant states (idle, listening, speaking)
+    and microphone audio volume level.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.phase = 0.0
-        self.setMinimumSize(160, 140)
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.tick)
-        self.timer.start(16)
-        
-        # Audio listener initialization if not already done
-        from gui import audio_reactive
-        try:
-            self.audio_stream = audio_reactive.start_audio_listener()
-        except Exception:
-            pass
+        self.angle = 0.0
+        self.setMinimumSize(140, 140)
 
-    def tick(self):
-        self.phase += 0.06
+        self._timer = QTimer(self)
+        self._timer.timeout.connect(self._animate)
+        self._timer.start(33)  # ~30 fps
+
+    def _animate(self):
+        self.angle = (self.angle + 2.5) % 360.0
         self.update()
 
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        cx = self.width() / 2
-        cy = self.height() / 2
 
-        # gets assistant current state
-        from gui.gui_state import get_state
-        from gui import audio_reactive
-        state = get_state()
-        volume = audio_reactive.get_volume()
+        w = self.width()
+        h = self.height()
+        cx = w / 2.0
+        cy = h / 2.0
+        size = min(w, h)
+        radius = size / 2.0 - 10.0
 
-        # Set colors and radius based on state
+        if radius <= 0:
+            return
+
+        try:
+            from gui.gui_state import get_state
+            state = get_state()
+        except Exception:
+            state = "idle"
+
+        try:
+            from gui.audio_reactive import get_volume
+            vol = get_volume()
+        except Exception:
+            vol = 0.0
+
         if state == "listening":
-            accent_color = QColor(0, 255, 120)  # Green
-            glow_color = QColor(0, 255, 120, 18)
-            inner_glow = QColor(0, 255, 120, 60)
-            text_color = QColor("#d6ffeb")
+            base_color = QColor("#00ffaa")
         elif state == "speaking":
-            accent_color = QColor(0, 170, 255)  # Cyan
-            glow_color = QColor(0, 170, 255, 18)
-            inner_glow = QColor(0, 170, 255, 60)
-            text_color = QColor("#d6f0ff")
-        else:  # idle
-            accent_color = QColor(255, 40, 40)   # Red
-            glow_color = QColor(255, 30, 60, 18)
-            inner_glow = QColor(255, 45, 80, 60)
-            text_color = QColor("#ffd6dc")
+            base_color = QColor("#00e5ff")
+        else:
+            base_color = QColor("#ff4b6e")
 
-        radius = min(self.width(), self.height()) * 0.32
-        radius += (volume * 50)
+        grad = QRadialGradient(cx, cy, radius)
+        c_glow = QColor(base_color)
+        c_glow.setAlpha(int(30 + 40 * vol))
+        c_dark = QColor(2, 8, 14, 220)
+        grad.setColorAt(0.0, c_glow)
+        grad.setColorAt(0.7, QColor(base_color.red(), base_color.green(), base_color.blue(), 10))
+        grad.setColorAt(1.0, c_dark)
 
-        # Outer glow
-        glow = QRadialGradient(QPointF(cx, cy), radius + 20)
-        glow.setColorAt(0.0, glow_color)
-        glow.setColorAt(1.0, QColor(0, 0, 0, 0))
         painter.setPen(Qt.NoPen)
-        painter.setBrush(glow)
-        painter.drawEllipse(QPointF(cx, cy), radius + 18, radius + 18)
+        painter.setBrush(grad)
+        painter.drawEllipse(QPointF(cx, cy), radius, radius)
 
-        # Morphing shape
-        path = QPainterPath()
-        points = []
-        wave_mult = 18 if state == "listening" else (16 if state == "speaking" else 14)
-        wave_mult += (volume * 60)
+        pulse = math.sin(math.radians(self.angle * 2)) * 3.0 + (vol * 8.0)
 
-        for angle_deg in range(0, 360, 8):
-            angle = math.radians(angle_deg)
-            wave = (math.sin(angle * 3 + self.phase) * wave_mult
-                    + math.cos(angle * 5 - self.phase) * (wave_mult * 0.4))
-            r = radius + wave
-            points.append(QPointF(cx + math.cos(angle) * r,
-                                  cy + math.sin(angle) * r))
+        pen_outer = QPen(base_color, 2)
+        painter.setPen(pen_outer)
+        rect_outer = QRectF(cx - radius + 4, cy - radius + 4, (radius - 4) * 2, (radius - 4) * 2)
+        painter.drawArc(rect_outer, int((self.angle) * 16), int(120 * 16))
+        painter.drawArc(rect_outer, int((self.angle + 180) * 16), int(120 * 16))
 
-        path.moveTo(points[0])
-        for point in points[1:]:
-            path.lineTo(point)
-        path.closeSubpath()
+        inner_r = radius * 0.6 + pulse
+        if inner_r > 0:
+            c_inner = QColor(base_color)
+            c_inner.setAlpha(180)
+            pen_inner = QPen(c_inner, 1.5, Qt.DashLine)
+            painter.setPen(pen_inner)
+            painter.drawEllipse(QPointF(cx, cy), inner_r, inner_r)
 
-        painter.setPen(QPen(accent_color, 2.5))
-        painter.setBrush(QColor(accent_color.red(), accent_color.green(), accent_color.blue(), 20))
-        painter.drawPath(path)
+        core_r = radius * 0.35 + (vol * 5.0)
+        if core_r > 0:
+            core_grad = QRadialGradient(cx, cy, core_r)
+            core_grad.setColorAt(0.0, QColor("#ffffff"))
+            core_grad.setColorAt(0.5, base_color)
+            c_transparent = QColor(base_color)
+            c_transparent.setAlpha(0)
+            core_grad.setColorAt(1.0, c_transparent)
 
-        # Inner ring
-        painter.setPen(QPen(inner_glow, 1))
-        painter.setBrush(Qt.NoBrush)
-        inner_r = radius * 0.55
-        painter.drawEllipse(QPointF(cx, cy), inner_r, inner_r)
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(core_grad)
+            painter.drawEllipse(QPointF(cx, cy), core_r, core_r)
 
-        # Label
-        painter.setPen(text_color)
-        painter.setFont(QFont("Consolas", 10, QFont.Bold))
-        painter.drawText(self.rect(), Qt.AlignCenter, "J.A.R.V.I.S")
+        painter.setPen(QColor("#ffffff"))
+        painter.setFont(QFont("Consolas", max(7, int(size * 0.055)), QFont.Bold))
+        painter.drawText(self.rect(), Qt.AlignCenter, "JARVIS\nCORE")
 
 
-class WorldClockWidget(QWidget):
-    """Compact world clock tile showing city name, time, and date."""
+# -------------------------------------------------
+# WORLD CLOCK WIDGET
+# -------------------------------------------------
 
-    def __init__(self, city="City", time_str="00:00", label="UTC",
-                 date_str="01 Jan", parent=None):
+
+class WorldClockWidget(QFrame):
+    """
+    Compact World Clock Tile for the HUD Dashboard.
+    Displays city name, time, timezone label, and short date.
+    """
+
+    def __init__(self, city="", time_str="", label="", date_str="", parent=None):
         super().__init__(parent)
-        self.city = city
-        self.time_str = time_str
-        self.label = label
-        self.date_str = date_str
-        self.setMinimumSize(120, 58)
-        self.setMaximumHeight(62)
+        self.setStyleSheet("""
+            QFrame {
+                background-color: rgba(4, 10, 18, 200);
+                border: 1px solid rgba(0, 229, 255, 30);
+                border-radius: 8px;
+            }
+        """)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(8, 6, 8, 6)
+        layout.setSpacing(2)
+
+        top_layout = QHBoxLayout()
+        top_layout.setSpacing(4)
+
+        self.city_label = QLabel(city)
+        self.city_label.setFont(QFont("Consolas", 8, QFont.Bold))
+        self.city_label.setStyleSheet("color: #00e5ff; border: none; background: transparent;")
+
+        self.tz_label = QLabel(label)
+        self.tz_label.setFont(QFont("Consolas", 7, QFont.Bold))
+        self.tz_label.setStyleSheet("color: rgba(255, 255, 255, 120); border: none; background: transparent;")
+        self.tz_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        top_layout.addWidget(self.city_label, stretch=1)
+        top_layout.addWidget(self.tz_label)
+        layout.addLayout(top_layout)
+
+        self.time_label = QLabel(time_str)
+        self.time_label.setFont(QFont("Consolas", 13, QFont.Bold))
+        self.time_label.setStyleSheet("color: #eafaff; border: none; background: transparent;")
+        self.time_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.time_label)
+
+        self.date_label = QLabel(date_str)
+        self.date_label.setFont(QFont("Consolas", 7))
+        self.date_label.setStyleSheet("color: rgba(255, 255, 255, 150); border: none; background: transparent;")
+        self.date_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.date_label)
 
     def set_data(self, city, time_str, label, date_str):
-        self.city = city
-        self.time_str = time_str
-        self.label = label
-        self.date_str = date_str
-        self.update()
+        self.city_label.setText(city)
+        self.time_label.setText(time_str)
+        self.tz_label.setText(label)
+        self.date_label.setText(date_str)
 
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
 
-        # Background
-        painter.setPen(QPen(QColor(0, 229, 255, 35), 1))
-        painter.setBrush(QColor(4, 10, 18, 200))
-        painter.drawRoundedRect(QRectF(1, 1, self.width() - 2,
-                                       self.height() - 2), 8, 8)
+# -------------------------------------------------
+# REAL CLOCK WINDOW
+# -------------------------------------------------
 
-        # City name
-        painter.setPen(QColor(0, 229, 255, 200))
-        painter.setFont(QFont("Consolas", 8, QFont.Bold))
-        painter.drawText(8, 16, self.city)
 
-        # Time
-        painter.setPen(QColor("#eafaff"))
-        painter.setFont(QFont("Consolas", 14, QFont.Bold))
-        painter.drawText(8, 38, self.time_str)
+class ClockWindow(QWidget):
 
-        # Label + date
-        painter.setPen(QColor(255, 255, 255, 100))
-        painter.setFont(QFont("Consolas", 7))
-        text_w = painter.fontMetrics().horizontalAdvance(self.time_str)
-        painter.drawText(12 + text_w, 38, f" {self.label}")
-        painter.drawText(8, 52, self.date_str)
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("JARVIS CLOCK")
+
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #02060b;
+            }
+        """)
+
+        self.resize(500, 500)
+
+        layout = QVBoxLayout(self)
+
+        self.clock_dial = FuturisticDial()
+
+        layout.addWidget(self.clock_dial)
+
+        # REAL CLOCK TIMER
+        self.clock_timer = QTimer(self)
+
+        # UPDATE EVERY SECOND
+        self.clock_timer.timeout.connect(self.update_clock)
+
+        self.clock_timer.start(1000)
+
+        # INITIAL UPDATE
+        self.update_clock()
+
+    def update_clock(self):
+
+        # REAL LOCAL SYSTEM TIME
+        now = datetime.now()
+
+        # DIGITAL CLOCK
+        current_time = now.strftime("%H:%M:%S")
+
+        # ANALOG HAND
+        seconds = now.second + now.microsecond / 1_000_000
+
+        hand_ratio = seconds / 60.0
+
+        # PROGRESS
+        progress = seconds / 60.0
+
+        # UPDATE DIAL
+        self.clock_dial.set_values(
+            progress=progress,
+            hand_ratio=hand_ratio,
+            center_text=current_time,
+            sub_text=now.strftime("%A, %d %B %Y"),
+        )
+
+
+# -------------------------------------------------
+# MAIN
+# -------------------------------------------------
+
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+
+    window = ClockWindow()
+
+    window.show()
+
+    sys.exit(app.exec_())
