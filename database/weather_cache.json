@@ -1,9 +1,9 @@
 {
-    "timestamp": 1780154946.6492054,
-    "city": "Ayodhya",
-    "temperature": 31.0,
-    "feels_like": 30.8,
-    "humidity": 39,
+    "timestamp": 1780459739.150555,
+    "city": "Delhi",
+    "temperature": 34.2,
+    "feels_like": 34.1,
+    "humidity": 33,
     "condition": "Clear Sky",
-    "icon": "clear_night"
+    "icon": "clear_day"
 }
